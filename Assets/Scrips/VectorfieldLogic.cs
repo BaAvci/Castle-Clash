@@ -18,17 +18,18 @@ public static class VectorfieldLogic
         }
     }
 
-    public static void StraightVectorFieldOther(this Transform vectorfieldPosition, Transform foreignTransform, float vectorfieldHeight, float updraft)
+    public static Vector3 StraightVectorFieldOther(this Transform vectorfieldPosition, Transform foreignTransform, float vectorfieldHeight, float updraft)
     {
         if (vectorfieldPosition.position.y + vectorfieldHeight >= foreignTransform.position.y)
         {
-            foreignTransform.position += new Vector3(0, updraft, 0) * Time.deltaTime;
+            return new Vector3(0, updraft, 0) * Time.deltaTime;
         }
+        return Vector3.zero;
     }
 
     // Creates a vectorfield that circles around a given point.
     // No forces outwards or inwards applied
-    public static void SpiralVectorField(this Transform transform, Transform foreignTransform, Vector3 strenght)
+    public static Vector3 SpiralVectorField(this Transform transform, Transform foreignTransform, Vector3 strenght)
     {
         // F(x,y) = <y,-x> The basic function results in speed increase the further away it is
         // F(x,y) = <y * n , -x * n> results in a stronger start speed
@@ -40,11 +41,11 @@ public static class VectorfieldLogic
 
         float x = relativZ * strenght.z / Mathf.Sqrt(relativX * relativX + relativZ * relativZ);
         float z = -relativX * strenght.x / Mathf.Sqrt((relativX * relativX + relativZ * relativZ));
-        foreignTransform.position += new Vector3(x, 0, z) * Time.deltaTime;
+        return new Vector3(x, 0, z) * Time.deltaTime;
     }
 
     // Creates a vectorfield that moves everything away from a given point
-    public static void RepulsionVectorField(this Transform transform, Transform foreignTransform, Vector3 strenght)
+    public static Vector3 RepulsionVectorField(this Transform transform, Transform foreignTransform, Vector3 strenght)
     {
         // F(x,y) = <x , y> The basic function results in speed increase the further away it is
         // F(x,y) = <x * n , y * n> results in a stronger start speed
@@ -53,16 +54,15 @@ public static class VectorfieldLogic
         var relativX = foreignTransform.position.x - transform.position.x;
         var relativZ = foreignTransform.position.z - transform.position.z;
 
-
         float speed = SpeedCalculator(relativX, relativZ);
         float x = relativX * strenght.x / speed;
         float z = relativZ * strenght.z / speed;
 
-        foreignTransform.position += new Vector3(x, 0, z) * Time.deltaTime;
+        return new Vector3(x, 0, z) * Time.deltaTime;
     }
 
     // Creates a vectorfield that moves everything towards the given point
-    public static void AttractingVectorField(this Transform transform, Transform foreignTransform, Vector3 strenght)
+    public static Vector3 AttractingVectorField(this Transform transform, Transform foreignTransform, Vector3 strenght)
     {
         // F(x,y) = <-x , -y> The basic function results in speed increase the further away it is
         // F(x,y) = <-x * n , -y * n> results in a stronger start speed
@@ -73,30 +73,47 @@ public static class VectorfieldLogic
 
         if (Mathf.Abs(relativX) <= 0.1f && Mathf.Abs(relativZ) <= 0.1f)
         {
-            return;
+            return Vector3.zero ;
         }
 
         float speed = SpeedCalculator(relativX, relativZ, false);
         float x = -relativX * strenght.x / speed;
         float z = -relativZ * strenght.z / speed;
 
-        foreignTransform.position += new Vector3(x, 0, z) * Time.deltaTime;
+        return new Vector3(x, 0, z) * Time.deltaTime;
     }
-    public static void BlackHole(this Transform transform, Transform foreignTransform, float inwardPullStrenght = 0.1f, float spiralStrenght = 1)
+    public static Vector3 BlackHole(this Transform transform, Transform foreignTransform, ref bool reachedMiddle, float inwardPullStrenght = 0.1f, float spiralStrenght = 1)
     {
         // Fa(x,y) = <-x , -y> inward pull        
         // Fb(x,y) = <+y , -x> vortex
         // F = Fa + Fb
         // F = < -x +y , -y -x> OD < y -x , -x -y> results in the same vectorfield
+        float noForceRadius = 0.5f;
 
         var relativX = foreignTransform.position.x - transform.position.x;
         var relativZ = foreignTransform.position.z - transform.position.z;
-        float speed = SpeedCalculator(relativX, relativZ, false);
 
+        if (relativX * relativX + relativZ * relativZ < noForceRadius * noForceRadius)
+        {
+            reachedMiddle = true; // TODO: Move to foreignObject
+            return transform.SpiralVectorField(foreignTransform, new Vector3(50, 0, 50));
+        }
+
+        // TODO: Move to foreignObject
+        if (foreignTransform.position.magnitude >= 0.65f)
+        {
+            reachedMiddle = false;
+        }
+        // TODO Finish
+
+        float speed = SpeedCalculator(relativX, relativZ, false);
+        if (reachedMiddle)
+        {
+            inwardPullStrenght = 10;
+        }
         float x = (relativZ * spiralStrenght - (relativX * inwardPullStrenght)) / speed;
         float z = (-relativX * spiralStrenght - (relativZ * inwardPullStrenght)) / speed;
-
-        foreignTransform.position += new Vector3(x, 0, z) * Time.deltaTime;
+        return new Vector3(x, 0, z) * Time.deltaTime;
     }
     private static float SpeedCalculator(float x, float y, bool sqrt = false)
     {
