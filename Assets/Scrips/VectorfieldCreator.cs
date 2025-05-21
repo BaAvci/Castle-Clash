@@ -56,10 +56,10 @@ public class VectorfieldCreator : MonoBehaviour
                     acceleration = transform.SpiralVectorField(foreignObject, vectorFieldStrength, velocity, accelerationDrag);
                     break;
                 case VectorFieldTyp.Attraction:
-                    acceleration = transform.AttractingVectorField(foreignObject, vectorFieldStrength);
+                    acceleration = transform.AttractingVectorField(foreignObject, vectorFieldStrength, velocity, accelerationDrag);
                     break;
                 case VectorFieldTyp.Repulsion:
-                    acceleration = transform.RepulsionVectorField(foreignObject, vectorFieldStrength);
+                    acceleration = transform.RepulsionVectorField(foreignObject, vectorFieldStrength, velocity, accelerationDrag);
                     break;
                 case VectorFieldTyp.Blackhole:
                     acceleration = transform.BlackHole(foreignObject, velocity, accelerationDrag, inwardPullStr, spiralStr);

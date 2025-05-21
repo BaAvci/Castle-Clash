@@ -49,7 +49,7 @@ public static class VectorfieldLogic
     }
 
     // Creates a vectorfield that moves everything away from a given point
-    public static Vector3 RepulsionVectorField(this Transform transform, Transform foreignTransform, Vector3 strenght)
+    public static Vector3 RepulsionVectorField(this Transform transform, Transform foreignTransform, Vector3 strenght, Vector3 velocity, float accelerationDrag = 50)
     {
         // F(x,y) = <x , y> The basic function results in speed increase the further away it is
         // F(x,y) = <x * n , y * n> results in a stronger start speed
@@ -62,11 +62,13 @@ public static class VectorfieldLogic
         float x = relativX * strenght.x / speed;
         float z = relativZ * strenght.z / speed;
 
-        return new Vector3(x, 0, z) * Time.deltaTime;
+        Vector3 acceleration = new Vector3(x, 0, z) * Time.deltaTime;
+        acceleration -= velocity * accelerationDrag * Time.deltaTime;
+        return acceleration;
     }
 
     // Creates a vectorfield that moves everything towards the given point
-    public static Vector3 AttractingVectorField(this Transform transform, Transform foreignTransform, Vector3 strenght)
+    public static Vector3 AttractingVectorField(this Transform transform, Transform foreignTransform, Vector3 strenght, Vector3 velocity, float accelerationDrag = 50)
     {
         // F(x,y) = <-x , -y> The basic function results in speed increase the further away it is
         // F(x,y) = <-x * n , -y * n> results in a stronger start speed
@@ -84,7 +86,9 @@ public static class VectorfieldLogic
         float x = -relativX * strenght.x / speed;
         float z = -relativZ * strenght.z / speed;
 
-        return new Vector3(x, 0, z) * Time.deltaTime;
+        Vector3 acceleration = new Vector3(x, 0, z) * Time.deltaTime;
+        acceleration -= velocity * accelerationDrag * Time.deltaTime;
+        return acceleration;
     }
     public static Vector3 BlackHole(this Transform transform, Transform foreignTransform, Vector3 velocity, float accelerationDrag = 50, float inwardPullStrenght = 0.1f, float spiralStrenght = 1)
     {
