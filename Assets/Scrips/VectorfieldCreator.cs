@@ -62,7 +62,7 @@ public class VectorfieldCreator : MonoBehaviour
                     acceleration = transform.RepulsionVectorField(foreignObject, vectorFieldStrength);
                     break;
                 case VectorFieldTyp.Blackhole:
-                    acceleration = transform.BlackHole(foreignObject, ref reachedMiddle, velocity, accelerationDrag, inwardPullStr, spiralStr);
+                    acceleration = transform.BlackHole(foreignObject, velocity, accelerationDrag, inwardPullStr, spiralStr);
                     break;
             }
             acceleration -= velocity * 50 * Time.deltaTime;
