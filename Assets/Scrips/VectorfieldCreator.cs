@@ -16,6 +16,7 @@ public class VectorfieldCreator : MonoBehaviour
     [SerializeField] private Vector3 vectorFieldStrength = new(5, 0, 3);
     [SerializeField] private Transform foreignObject;
     [SerializeField] private VectorFieldTyp vectorFieldTyp;
+    [SerializeField] private float accelerationDrag = 50;
 
     [Header("StraightField")]
     [SerializeField] private float updraft = 5;
@@ -52,7 +53,7 @@ public class VectorfieldCreator : MonoBehaviour
                     acceleration = transform.StraightVectorFieldOther(foreignObject, vectorFieldHeight, updraft);
                     break;
                 case VectorFieldTyp.Circular:
-                    acceleration = transform.SpiralVectorField(foreignObject, vectorFieldStrength);
+                    acceleration = transform.SpiralVectorField(foreignObject, vectorFieldStrength, velocity, accelerationDrag);
                     break;
                 case VectorFieldTyp.Attraction:
                     acceleration = transform.AttractingVectorField(foreignObject, vectorFieldStrength);
@@ -61,11 +62,12 @@ public class VectorfieldCreator : MonoBehaviour
                     acceleration = transform.RepulsionVectorField(foreignObject, vectorFieldStrength);
                     break;
                 case VectorFieldTyp.Blackhole:
-                    acceleration = transform.BlackHole(foreignObject, ref reachedMiddle, inwardPullStr, spiralStr);
+                    acceleration = transform.BlackHole(foreignObject, ref reachedMiddle, velocity, accelerationDrag, inwardPullStr, spiralStr);
                     break;
             }
+            acceleration -= velocity * 50 * Time.deltaTime;
             velocity += acceleration * Time.deltaTime;
-            foreignObject.position += acceleration * Time.deltaTime;
+            foreignObject.position += velocity * Time.deltaTime;
         }
     }
 

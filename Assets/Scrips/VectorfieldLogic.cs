@@ -29,7 +29,7 @@ public static class VectorfieldLogic
 
     // Creates a vectorfield that circles around a given point.
     // No forces outwards or inwards applied
-    public static Vector3 SpiralVectorField(this Transform transform, Transform foreignTransform, Vector3 strenght)
+    public static Vector3 SpiralVectorField(this Transform transform, Transform foreignTransform, Vector3 strenght, Vector3 velocity, float accelerationDrag = 50)
     {
         // F(x,y) = <y,-x> The basic function results in speed increase the further away it is
         // F(x,y) = <y * n , -x * n> results in a stronger start speed
@@ -39,9 +39,13 @@ public static class VectorfieldLogic
         var relativX = foreignTransform.position.x - transform.position.x;
         var relativZ = foreignTransform.position.z - transform.position.z;
 
-        float x = relativZ * strenght.z / Mathf.Sqrt(relativX * relativX + relativZ * relativZ);
-        float z = -relativX * strenght.x / Mathf.Sqrt((relativX * relativX + relativZ * relativZ));
-        return new Vector3(x, 0, z) * Time.deltaTime;
+        float speed = SpeedCalculator(relativX, relativZ);
+        float x = relativZ * strenght.z / speed;
+        float z = -relativX * strenght.x / speed;
+
+        Vector3 acceleration = new Vector3(x, 0, z) * Time.deltaTime;
+        acceleration -= velocity * accelerationDrag * Time.deltaTime;
+        return acceleration;
     }
 
     // Creates a vectorfield that moves everything away from a given point
@@ -73,7 +77,7 @@ public static class VectorfieldLogic
 
         if (Mathf.Abs(relativX) <= 0.1f && Mathf.Abs(relativZ) <= 0.1f)
         {
-            return Vector3.zero ;
+            return Vector3.zero;
         }
 
         float speed = SpeedCalculator(relativX, relativZ, false);
@@ -82,7 +86,7 @@ public static class VectorfieldLogic
 
         return new Vector3(x, 0, z) * Time.deltaTime;
     }
-    public static Vector3 BlackHole(this Transform transform, Transform foreignTransform, ref bool reachedMiddle, float inwardPullStrenght = 0.1f, float spiralStrenght = 1)
+    public static Vector3 BlackHole(this Transform transform, Transform foreignTransform, Vector3 velocity, float accelerationDrag = 50, float inwardPullStrenght = 0.1f, float spiralStrenght = 1)
     {
         // Fa(x,y) = <-x , -y> inward pull        
         // Fb(x,y) = <+y , -x> vortex
@@ -95,25 +99,16 @@ public static class VectorfieldLogic
 
         if (relativX * relativX + relativZ * relativZ < noForceRadius * noForceRadius)
         {
-            reachedMiddle = true; // TODO: Move to foreignObject
-            return transform.SpiralVectorField(foreignTransform, new Vector3(50, 0, 50));
+            return transform.SpiralVectorField(foreignTransform, new Vector3(50, 0, 50), velocity, accelerationDrag);
         }
-
-        // TODO: Move to foreignObject
-        if (foreignTransform.position.magnitude >= 0.65f)
-        {
-            reachedMiddle = false;
-        }
-        // TODO Finish
 
         float speed = SpeedCalculator(relativX, relativZ, false);
-        if (reachedMiddle)
-        {
-            inwardPullStrenght = 10;
-        }
+
         float x = (relativZ * spiralStrenght - (relativX * inwardPullStrenght)) / speed;
         float z = (-relativX * spiralStrenght - (relativZ * inwardPullStrenght)) / speed;
-        return new Vector3(x, 0, z) * Time.deltaTime;
+        Vector3 acceleration = new Vector3(x, 0, z) * Time.deltaTime;
+        acceleration -= velocity * accelerationDrag * Time.deltaTime;
+        return acceleration;
     }
     private static float SpeedCalculator(float x, float y, bool sqrt = false)
     {
