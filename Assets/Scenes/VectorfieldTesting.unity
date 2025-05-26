@@ -401,7 +401,7 @@ Transform:
   m_GameObject: {fileID: 1376130465}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.28, y: 0.5, z: 0.37}
+  m_LocalPosition: {x: -2.56, y: 0.5, z: 3.41}
   m_LocalScale: {x: 1, y: 1, z: 0.00001}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -676,7 +676,7 @@ MonoBehaviour:
   vectorFieldSize: {x: 5, y: 0, z: 5}
   vectorFieldStrength: {x: 50, y: 0, z: 50}
   foreignObject: {fileID: 1376130468}
-  vectorFieldTyp: 3
+  vectorFieldTyp: 2
   accelerationDrag: 50
   updraft: 5
   vectorFieldHeight: 10
