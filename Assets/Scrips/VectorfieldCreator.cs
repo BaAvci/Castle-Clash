@@ -31,7 +31,6 @@ public class VectorfieldCreator : MonoBehaviour
     [Header("ForeignObject")]
     private Vector3 acceleration;
     private Vector3 velocity;
-    private bool reachedMiddle = false;
 
     private void Start()
     {
