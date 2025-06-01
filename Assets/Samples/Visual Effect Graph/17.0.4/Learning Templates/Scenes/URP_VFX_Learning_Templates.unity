@@ -1884,7 +1884,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5419633388091523272, guid: 719615f492dfced46be67a250bc49568, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -189.04245
+      value: -141.04245
       objectReference: {fileID: 0}
     - target: {fileID: 5419633388091523272, guid: 719615f492dfced46be67a250bc49568, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2298,8 +2298,8 @@ MonoBehaviour:
   - {fileID: 1406233241}
   PresentationMode: 1
   enableSelectButton: 1
-  currentIndex: 31
-  currentPrefab: {fileID: 1406233241}
+  currentIndex: 23
+  currentPrefab: {fileID: 370279084}
   requiredSettingsSO: {fileID: 0}
   gameobjectSamplesName: {fileID: 0}
   gameobjectSamplesDescription: {fileID: 0}
@@ -2909,6 +2909,10 @@ PrefabInstance:
     - target: {fileID: 6396313334163737381, guid: e98e03fc6f7f8d04291539d57bfbe5b8, type: 3}
       propertyPath: m_Name
       value: Trigger Event on Collide
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852950795850566291, guid: e98e03fc6f7f8d04291539d57bfbe5b8, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

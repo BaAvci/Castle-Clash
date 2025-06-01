@@ -119,10 +119,10 @@ MonoBehaviour:
   - title: Soccer
     position:
       serializedVersion: 2
-      x: 2011
-      y: -827
-      width: 659
-      height: 2745
+      x: 1986
+      y: -829
+      width: 683
+      height: 2738
     contents:
     - model: {fileID: 8926484042661615539}
       id: 0
@@ -484,7 +484,7 @@ MonoBehaviour:
     x: 139
     y: -967
     width: 4269
-    height: 8395
+    height: 8391
 --- !u!114 &114350483966674976
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2182,7 +2182,7 @@ MonoBehaviour:
     linkedSlots:
     - outputSlot: {fileID: 8926484042661615253}
       inputSlot: {fileID: 8926484042661616542}
-    position: {x: 2036.6666, y: 1139.3334}
+    position: {x: 2011.2, y: 1099.2001}
     expandedSlots:
     - {fileID: 8926484042661615253}
     - {fileID: 8926484042661615254}
@@ -13314,7 +13314,7 @@ MonoBehaviour:
     linkedSlots:
     - outputSlot: {fileID: 8926484042661616227}
       inputSlot: {fileID: 8926484042661616583}
-    position: {x: 2045.3334, y: 133.33333}
+    position: {x: 2045.6, y: 132.8}
     expandedSlots: []
     expanded: 0
     supecollapsed: 0
