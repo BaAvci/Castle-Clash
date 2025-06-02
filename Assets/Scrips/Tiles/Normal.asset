@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cfd09cc3e24aac4a84ff120166a674a, type: 3}
   m_Name: Normal
   m_EditorClassIdentifier: 
-  Material: {fileID: 0}
+  Material: {fileID: 2100000, guid: 5b0c3e9d23bce1f48aae69ebd5b89a12, type: 2}
+  TileStatus: 0
   VisualEffect: {fileID: 0}

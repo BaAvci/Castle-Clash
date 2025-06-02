@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cfd09cc3e24aac4a84ff120166a674a, type: 3}
   m_Name: Burnt
   m_EditorClassIdentifier: 
-  Material: {fileID: 0}
+  Material: {fileID: 2100000, guid: 88ffa8e109b756149a2576e0e6b0d0d1, type: 2}
+  TileStatus: 0
   VisualEffect: {fileID: 0}
