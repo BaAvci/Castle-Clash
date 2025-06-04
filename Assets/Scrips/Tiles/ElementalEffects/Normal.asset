@@ -9,9 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9cfd09cc3e24aac4a84ff120166a674a, type: 3}
+  m_Script: {fileID: 11500000, guid: 8f6d31c1d0350904d9ba57260b045d45, type: 3}
   m_Name: Normal
   m_EditorClassIdentifier: 
-  Material: {fileID: 2100000, guid: 5b0c3e9d23bce1f48aae69ebd5b89a12, type: 2}
-  TileStatus: 0
-  VisualEffect: {fileID: 0}
+  DurationTillEffectRemoval: 0
+  DangerValue: 0
+  DangerMultiplier: 0
+  SaveValue: 0
+  SaveMultiplier: 0

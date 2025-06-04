@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class UnitMovement : MonoBehaviour
 {
-    public event Action<Vector2Int> ChangedTileCoordinates;
+    public event Action<Vector2Int, ElementalEffect[]> ChangedTileCoordinates;
     [SerializeField] float moveSpeed = 0.1f;
+    [SerializeField] ElementalEffect[] walkingElementalEffect;
     private void Start()
     {
         transform.position = new Vector3(0, 1, 3);
@@ -25,7 +26,7 @@ public class UnitMovement : MonoBehaviour
         var objyPos = (int)transform.position.z;
         if (xPos > objxPos || yPos > objyPos)
         {
-            ChangedTileCoordinates?.Invoke(new Vector2Int(objxPos, objyPos));
+            ChangedTileCoordinates?.Invoke(new Vector2Int(objxPos, objyPos),walkingElementalEffect);
         }
     }
 

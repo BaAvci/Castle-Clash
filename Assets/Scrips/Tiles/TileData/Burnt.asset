@@ -9,9 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9cfd09cc3e24aac4a84ff120166a674a, type: 3}
-  m_Name: Burning
+  m_Script: {fileID: 11500000, guid: b26c360bea2bc3346b7c4acc93754c77, type: 3}
+  m_Name: Burnt
   m_EditorClassIdentifier: 
-  Material: {fileID: 2100000, guid: cf914c927baad6c45be53fd2f8e01bae, type: 2}
-  TileStatus: 0
-  VisualEffect: {fileID: 0}
+  TileMaterial: {fileID: 2100000, guid: 88ffa8e109b756149a2576e0e6b0d0d1, type: 2}
+  Priority: 0
+  Rules: []
+  ExecutionOrder: 0
+  ElementalEffect: {fileID: 0}
