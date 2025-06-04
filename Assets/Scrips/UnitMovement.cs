@@ -1,0 +1,33 @@
+﻿using System;
+using System.Collections;
+using UnityEngine;
+
+public class UnitMovement : MonoBehaviour
+{
+    public event Action<Vector2Int, ElementalEffect[]> ChangedTileCoordinates;
+    [SerializeField] float moveSpeed = 0.1f;
+    [SerializeField] ElementalEffect[] walkingElementalEffect;
+    private void Start()
+    {
+        transform.position = new Vector3(0, 1, 3);
+    }
+    private void Update()
+    {
+        Movement();
+    }
+
+    private void Movement()
+    {
+        var calculatedSpeed = new Vector3(moveSpeed, 0, 0) * Time.deltaTime;
+        transform.Translate(calculatedSpeed);
+        var xPos = Math.Round(transform.position.x);
+        var yPos = Math.Round(transform.position.z);
+        var objxPos = (int)transform.position.x;
+        var objyPos = (int)transform.position.z;
+        if (xPos > objxPos || yPos > objyPos)
+        {
+            ChangedTileCoordinates?.Invoke(new Vector2Int(objxPos, objyPos),walkingElementalEffect);
+        }
+    }
+
+}
