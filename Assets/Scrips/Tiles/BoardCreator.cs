@@ -15,5 +15,4 @@ public class BoardCreator : MonoBehaviour
         tileManager = GetComponentInChildren<TileManager>();
         tileManager.CreateGrid(boardSize);
     }
-
 }

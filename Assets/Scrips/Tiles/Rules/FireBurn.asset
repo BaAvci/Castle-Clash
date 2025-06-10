@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8007c76aa0a6734e8003d83182f4c2f, type: 3}
   m_Name: FireBurn
   m_EditorClassIdentifier: 
-  AffectableTileStatuses: 
-  DangerousEffects: []
-  SaveEffects: []
-  PointsTillStatusChange: 0
+  DangerousEffects:
+  - {fileID: 11400000, guid: ec35d58f481e69b47bf500d8009642e9, type: 2}
+  SaveEffects:
+  - {fileID: 11400000, guid: 75638ffce3e5c7142a85efeb1a7d8142, type: 2}
+  PointsTillStatusChange: 10

@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8d1718b1e90b14eaab9ba8ed61b9f7, type: 3}
   m_Name: AfterFireBurn
   m_EditorClassIdentifier: 
-  Timer: 0
+  Timer: 5

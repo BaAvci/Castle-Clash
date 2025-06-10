@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -8,77 +9,37 @@ using UnityEngine.Rendering;
 
 public class TileManager : MonoBehaviour
 {
-    private Dictionary<ElementalEffect, TileData> dictTiles;
-    public Action<Vector2Int> UnitPositionUpdate;
-    [SerializeField] private List<UnitMovement> units;
-    [SerializeField] private TileData[] tileDatas;
+    [SerializeField] private Vector2Int gridSize;
+    [SerializeField] private float simulationInterval = 1f;
+    [SerializeField] private bool simulateOnPressSpace = false;
+
+    [Header("Tile Types")]
+    [SerializeField] private ElementalEffect defaultType;
+    [SerializeField] private TileData[] tileData;
 
     [SerializeField] private GameObject defaultTilePrefab;
-    [SerializeField] private ElementalEffect defaultElementalEffect;
-    private Vector2Int gridSize;
-    private Tile[,] tileGrid;
-    private TileManager tileManager;
+    [SerializeField] private Dictionary<ElementalEffect, TileData> dictTileData = new();
 
-    // TEMP
+    private Tile[,] tileGrid;
+    private bool spacePressed;
+
+    private WaitForSeconds wait;
+
     [SerializeField] private GameObject testUnit;
 
-    private void Awake()
+    void Start()
     {
-        dictTiles = new();
-        foreach (var cell in tileDatas)
+        foreach (var tile in tileData)
         {
-            dictTiles.Add(cell.ElementalEffect, cell);
+            dictTileData.Add(tile.CellType, tile);
         }
-        testUnit.GetComponent<UnitMovement>().ChangedTileCoordinates += CalculateNextStateUnit;
-        units = new();
+
+        tileData = tileData.OrderBy(c => c.Priority).ToArray();
+
+        wait = new WaitForSeconds(simulationInterval);
+        testUnit.GetComponent<UnitMovement>().ChangedTileCoordinates += SetTileToType;
+        StartCoroutine(Co_Simulation());
     }
-
-    private void Start()
-    {
-        StartCoroutine(Co_CellularAutomata());
-    }
-
-    private void Update()
-    {
-        Debug.Log("test");
-    }
-
-    private void CalculateNextStateUnit(Vector2Int unitCoordinates, ElementalEffect[] elementalEffects)
-    {
-        for (int i = 0; i < tileDatas.Length; i++)
-        {
-            if (tileDatas[i].Priority < 0)
-            {
-                continue;
-            }
-
-            tileDatas[i].ExecuteRules(this, tileGrid, elementalEffects, unitCoordinates.x, unitCoordinates.y);
-        }
-        UpdateTile();
-    }
-
-    private void UpdateTile()
-    {
-        Tile tile;
-        for (int x = 0; x < gridSize.x; x++)
-        {
-            for (int y = 0; y < gridSize.y; y++)
-            {
-                tile = tileGrid[x, y];
-                tile.Current = tile.Next ? tile.Next : tile.Current;
-                tile.Next = null;
-                tile.Material = dictTiles[tile.Current].TileMaterial;
-            }
-        }
-    }
-
-    //public void AddUnits(GameObject newUnit, Vector2Int coordinates)
-    //{
-    //    GameObject createdUnit = Instantiate(newUnit, new Vector3(coordinates.x, 0, coordinates.y), Quaternion.identity);
-    //    UnitMovement unitMovement = createdUnit.GetComponent<UnitMovement>();
-    //    unitMovement.ChangedTileCoordinates += UpdateTile;
-    //    units.Add(unitMovement);
-    //}
 
     public void CreateGrid(Vector2Int gridSize)
     {
@@ -97,30 +58,105 @@ public class TileManager : MonoBehaviour
     {
         GameObject newTile = Instantiate(defaultTilePrefab, new Vector3(x, 0, y), Quaternion.identity, this.transform);
         newTile.GetComponentInChildren<TextMeshPro>().text = $"{x},{y}";
-        tileGrid[x, y] = new Tile(defaultElementalEffect, newTile);
+        tileGrid[x, y] = new Tile(defaultType, newTile, new Vector2Int(x, y));
         //tiles.Add(new Vector2Int(x, y), new TileData(newTile));
     }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            spacePressed = true;
+        }
+    }
+
     public bool IsIndexValid(Vector2Int index)
     {
         return index.x >= 0 && index.x < gridSize.x
             && index.y >= 0 && index.y < gridSize.y;
     }
+
+    public void SetTileToType(Vector2Int tilePosition, ElementalEffect cellType)
+    {
+        tileGrid[tilePosition.x, tilePosition.y].Current = cellType;
+
+        if (simulateOnPressSpace)
+        {
+            SetMaterial(tilePosition.x, tilePosition.y);
+        }
+    }
+
     public bool IsIndexValid(int x, int y)
     {
         return IsIndexValid(new Vector2Int(x, y));
     }
 
-    private IEnumerator Co_CellularAutomata()
+    private void SetMaterial(int x, int y)
     {
-        UpdateTile();
-        yield return 0;
+        Material newMat = GetCellData(tileGrid[x, y].Current).Material;
+        tileGrid[x, y].UpdateMaterial(newMat);
     }
 
-    private void OnDrawGizmos()
+    private void CalculateNextStates()
     {
-        var tileSize = defaultTilePrefab.transform.localScale / 2;
-        tileSize.y = 0;
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(Vector3.zero - tileSize, new Vector3(gridSize.x - 1, 0, gridSize.y - 1) + tileSize);
+        for (int i = 0; i < tileData.Length; i++)
+        {
+            if (tileData[i].Priority < 0)
+            {
+                continue;
+            }
+
+            tileData[i].ExecuteRules(this, tileGrid);
+        }
+    }
+
+    public TileData GetCellData(ElementalEffect current)
+    {
+        return dictTileData[current];
+    }
+
+    private IEnumerator Co_Simulation()
+    {
+        while (true)
+        {
+            if (simulateOnPressSpace)
+            {
+                while (!spacePressed)
+                {
+                    yield return null;
+                }
+                spacePressed = false;
+            }
+            else
+            {
+                yield return wait;
+            }
+
+            // Simulation
+            CalculateNextStates();
+            UpdateStates();
+        }
+    }
+
+    private void UpdateStates()
+    {
+        Tile cell;
+        for (int x = 0; x < gridSize.x; x++)
+        {
+            for (int y = 0; y < gridSize.y; y++)
+            {
+                cell = tileGrid[x, y];
+                cell.Current = cell.Next ? cell.Next : cell.Current;
+                cell.Next = null;
+
+                SetMaterial(x, y);
+            }
+        }
+    }
+
+    private void OnValidate()
+    {
+        wait = new WaitForSeconds(simulationInterval);
     }
 }

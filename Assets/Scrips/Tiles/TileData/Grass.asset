@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TileMaterial: {fileID: 2100000, guid: 5b0c3e9d23bce1f48aae69ebd5b89a12, type: 2}
   Priority: 0
-  Rules: []
+  Rules:
+  - {fileID: 11400000, guid: f1043a6cae7b4a146a4eaff18fea00ff, type: 2}
   ExecutionOrder: 0
-  ElementalEffect: {fileID: 0}
+  ElementalEffect: {fileID: 11400000, guid: 1e90a648446721f439383239da143474, type: 2}
+  AppliedEffects: []

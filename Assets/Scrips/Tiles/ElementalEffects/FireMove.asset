@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: FireMove
   m_EditorClassIdentifier: 
   DurationTillEffectRemoval: 0
-  ApplyRulesToTile: []
+  ApplyRulesToTile:
+  - {fileID: 11400000, guid: bef1f4b37bc8bec438f7c31137c82be3, type: 2}
   DangerValue: 0
   DangerMultiplier: 0
   SaveValue: 0

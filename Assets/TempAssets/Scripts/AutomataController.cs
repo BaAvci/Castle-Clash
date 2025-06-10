@@ -101,6 +101,7 @@ public class AutomataController : MonoBehaviour
         }
     }
 
+    //The Method that takes the input and changes the pixel
     public void SetPixelToType(Vector3 position, CellType cellType)
     {
         Vector3 bottomLeft = transform.position + new Vector3(-5 * transform.localScale.x, -5 * transform.localScale.y);

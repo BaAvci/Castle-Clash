@@ -119,6 +119,71 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &968113102
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -1402767478402772513, guid: 426c71f8982b8d646909221c4bbf3ed2, type: 3}
+      propertyPath: walkingElementalEffect.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -1402767478402772513, guid: 426c71f8982b8d646909221c4bbf3ed2, type: 3}
+      propertyPath: 'walkingElementalEffect.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 2856666a87ec7f04eb116c249224ce7e, type: 2}
+    - target: {fileID: 3653126228791784265, guid: 426c71f8982b8d646909221c4bbf3ed2, type: 3}
+      propertyPath: m_Name
+      value: Capsule
+      objectReference: {fileID: 0}
+    - target: {fileID: 8129832854406294118, guid: 426c71f8982b8d646909221c4bbf3ed2, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8129832854406294118, guid: 426c71f8982b8d646909221c4bbf3ed2, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8129832854406294118, guid: 426c71f8982b8d646909221c4bbf3ed2, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8129832854406294118, guid: 426c71f8982b8d646909221c4bbf3ed2, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8129832854406294118, guid: 426c71f8982b8d646909221c4bbf3ed2, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8129832854406294118, guid: 426c71f8982b8d646909221c4bbf3ed2, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8129832854406294118, guid: 426c71f8982b8d646909221c4bbf3ed2, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8129832854406294118, guid: 426c71f8982b8d646909221c4bbf3ed2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8129832854406294118, guid: 426c71f8982b8d646909221c4bbf3ed2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8129832854406294118, guid: 426c71f8982b8d646909221c4bbf3ed2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 426c71f8982b8d646909221c4bbf3ed2, type: 3}
 --- !u!1 &984598101
 GameObject:
   m_ObjectHideFlags: 0
@@ -240,6 +305,11 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!1 &1505266601 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3653126228791784265, guid: 426c71f8982b8d646909221c4bbf3ed2, type: 3}
+  m_PrefabInstance: {fileID: 968113102}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1696993482
 GameObject:
   m_ObjectHideFlags: 0
@@ -435,7 +505,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1495b57a8b461f649be9724550b14ddd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tilePrefab: {fileID: 4077219156497056328, guid: 01b46a4ac16ab834f9b2eab31590cdbc, type: 3}
   boardSize: {x: 9, y: 5}
 --- !u!114 &1980639078
 MonoBehaviour:
@@ -450,8 +519,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   units: []
-  materials: []
-  testUnit: {fileID: 3653126228791784265, guid: 426c71f8982b8d646909221c4bbf3ed2, type: 3}
+  tileDatas:
+  - {fileID: 11400000, guid: a39aa57d284866442800f555e95e3c09, type: 2}
+  - {fileID: 11400000, guid: cdc29fc0bb57611498253bcf3cc31b84, type: 2}
+  - {fileID: 11400000, guid: 7531adf156516694fb8933a02fb226fb, type: 2}
+  defaultTilePrefab: {fileID: 4077219156497056328, guid: 01b46a4ac16ab834f9b2eab31590cdbc, type: 3}
+  defaultElementalEffect: {fileID: 11400000, guid: 1e90a648446721f439383239da143474, type: 2}
+  testUnit: {fileID: 1505266601}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -459,3 +533,4 @@ SceneRoots:
   - {fileID: 1696993485}
   - {fileID: 984598103}
   - {fileID: 1980639076}
+  - {fileID: 968113102}

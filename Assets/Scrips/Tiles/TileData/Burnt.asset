@@ -16,4 +16,5 @@ MonoBehaviour:
   Priority: 0
   Rules: []
   ExecutionOrder: 0
-  ElementalEffect: {fileID: 0}
+  ElementalEffect: {fileID: 11400000, guid: 66c70bb4567a03c488b87d70573249d9, type: 2}
+  AppliedEffects: []
