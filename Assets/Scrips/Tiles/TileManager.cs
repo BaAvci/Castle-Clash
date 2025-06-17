@@ -14,13 +14,14 @@ public class TileManager : MonoBehaviour
     [SerializeField] private bool simulateOnPressSpace = false;
 
     [Header("Tile Types")]
-    [SerializeField] private ElementalEffect defaultType;
+    [SerializeField] private TileType defaultType;
     [SerializeField] private TileData[] tileData;
 
     [SerializeField] private GameObject defaultTilePrefab;
-    [SerializeField] private Dictionary<ElementalEffect, TileData> dictTileData = new();
+    [SerializeField] private Dictionary<TileType, TileData> dictTileData = new();
 
     private Tile[,] tileGrid;
+    private Dictionary<TileType, GameObject[,]> tileObjectPooling;
     private bool spacePressed;
 
     private WaitForSeconds wait;
@@ -31,7 +32,7 @@ public class TileManager : MonoBehaviour
     {
         foreach (var tile in tileData)
         {
-            dictTileData.Add(tile.CellType, tile);
+            dictTileData.Add(tile.TileType, tile);
         }
 
         tileData = tileData.OrderBy(c => c.Priority).ToArray();
@@ -45,21 +46,30 @@ public class TileManager : MonoBehaviour
     {
         this.gridSize = gridSize;
         tileGrid = new Tile[gridSize.x, gridSize.y];
-        for (int x = 0; x < gridSize.x; x++)
+        tileObjectPooling = new();
+        foreach (var tile in tileData)
         {
-            for (int y = 0; y < gridSize.y; y++)
+            tileObjectPooling[tile.TileType] = new GameObject[gridSize.x, gridSize.y];
+            for (int x = 0; x < gridSize.x; x++)
             {
-                AddTile(x, y);
+                for (int y = 0; y < gridSize.y; y++)
+                {
+                    AddTile(tile.TileType, x, y);
+                }
             }
         }
     }
 
-    private void AddTile(int x, int y)
+    private void AddTile(TileType tileType, int x, int y)
     {
-        GameObject newTile = Instantiate(defaultTilePrefab, new Vector3(x, 0, y), Quaternion.identity, this.transform);
+        GameObject newTile = Instantiate(tileType.Prefab, new Vector3(x, 0, y), Quaternion.identity, this.transform);
+        if (defaultTilePrefab != tileType.Prefab)
+        {
+            newTile.SetActive(false);
+        }
         newTile.GetComponentInChildren<TextMeshPro>().text = $"{x},{y}";
-        tileGrid[x, y] = new Tile(defaultType, newTile, new Vector2Int(x, y));
-        //tiles.Add(new Vector2Int(x, y), new TileData(newTile));
+        tileGrid[x, y] = new Tile(defaultType, new Vector2Int(x, y));
+        tileObjectPooling[tileType][x, y] = newTile;
     }
 
     // Update is called once per frame
@@ -77,25 +87,16 @@ public class TileManager : MonoBehaviour
             && index.y >= 0 && index.y < gridSize.y;
     }
 
-    public void SetTileToType(Vector2Int tilePosition, ElementalEffect cellType)
+    public void SetTileToType(Vector2Int tilePosition, TileType cellType)
     {
+        tileObjectPooling[tileGrid[tilePosition.x, tilePosition.y].Current][tilePosition.x, tilePosition.y].SetActive(false);
         tileGrid[tilePosition.x, tilePosition.y].Current = cellType;
-
-        if (simulateOnPressSpace)
-        {
-            SetMaterial(tilePosition.x, tilePosition.y);
-        }
+        tileObjectPooling[cellType][tilePosition.x, tilePosition.y].SetActive(true);
     }
 
     public bool IsIndexValid(int x, int y)
     {
         return IsIndexValid(new Vector2Int(x, y));
-    }
-
-    private void SetMaterial(int x, int y)
-    {
-        Material newMat = GetCellData(tileGrid[x, y].Current).Material;
-        tileGrid[x, y].UpdateMaterial(newMat);
     }
 
     private void CalculateNextStates()
@@ -111,7 +112,7 @@ public class TileManager : MonoBehaviour
         }
     }
 
-    public TileData GetCellData(ElementalEffect current)
+    public TileData GetCellData(TileType current)
     {
         return dictTileData[current];
     }
@@ -147,10 +148,13 @@ public class TileManager : MonoBehaviour
             for (int y = 0; y < gridSize.y; y++)
             {
                 cell = tileGrid[x, y];
-                cell.Current = cell.Next ? cell.Next : cell.Current;
-                cell.Next = null;
+                if (cell.Next != null)
+                {
+                    SetTileToType(new Vector2Int(x, y), cell.Next);
+                    cell.Current = cell.Next;
+                }
 
-                SetMaterial(x, y);
+                cell.Next = null;
             }
         }
     }

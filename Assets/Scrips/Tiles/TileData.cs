@@ -6,11 +6,10 @@ public enum ExecutionOrder
     UpLineByLine
 }
 
-[CreateAssetMenu(fileName = "CellData", menuName = "Cellular Automata/CellData")]
+[CreateAssetMenu(fileName = "CellData", menuName = "Cellular Automata/Tile Data")]
 public class TileData : ScriptableObject
 {
-    public ElementalEffect CellType;
-    public Material Material;
+    public TileType TileType;
 
     public int Priority = 0;
 
@@ -41,11 +40,7 @@ public class TileData : ScriptableObject
             {
                 for (int x = 0; x < cellGrid.GetLength(0); x++)
                 {
-                    if (cellGrid[x, y].Current != CellType)
-                    {
-                        continue;
-                    }
-                    rules[i].ExecuteRule(controller, cellGrid, x, y, CellType);
+                    rules[i].ExecuteRule(controller, cellGrid, x, y, TileType);
                 }
             }
         }
@@ -59,11 +54,11 @@ public class TileData : ScriptableObject
             {
                 for (int x = 0; x < cellGrid.GetLength(0); x++)
                 {
-                    if (cellGrid[x, y].Current != CellType)
+                    if (cellGrid[x, y].Current != TileType)
                     {
                         continue;
                     }
-                    rules[i].ExecuteRule(controller, cellGrid, x, y, CellType);
+                    rules[i].ExecuteRule(controller, cellGrid, x, y, TileType);
                 }
             }
         }

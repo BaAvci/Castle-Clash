@@ -6,38 +6,22 @@ public class Tile
 {
     public Vector2Int Index;
 
-    public ElementalEffect Current;
+    public TileType Current;
 #nullable enable
-    public ElementalEffect? Next;
+    public TileType? Next;
 #nullable disable
+    public int CurrentDryness { get; private set; }
 
-    //public Dictionary<Tile, int> TileAffectingElements;
-
-    public Material TileMaterial { get; private set; }
-
-    public Tile(ElementalEffect defaultType, GameObject tileObject, Vector2Int index)
+    public Tile(TileType defaultType, Vector2Int index)
     {
-        //TileAffectingElements = new();
         Current = defaultType;
-        TileMaterial = tileObject.GetComponent<MeshRenderer>().material;
+        CurrentDryness = Current.Dryness;
         Index = index;
     }
 
-    public void UpdateMaterial(Material newMaterial)
+    public void CalculateDryness(int dryness)
     {
-        TileMaterial = newMaterial;
+        CurrentDryness += dryness;
     }
-
-    //public void AddAffectingElement(Tile tileToAdd, int value)
-    //{
-    //    if (!TileAffectingElements.TryAdd(tileToAdd, value))
-    //    {
-    //        TileAffectingElements[tileToAdd] = value;
-    //    }
-    //}
-    //public void RemoveAffectingElement(Tile tileToRemove)
-    //{
-    //    TileAffectingElements.Remove(tileToRemove);
-    //}
 }
 

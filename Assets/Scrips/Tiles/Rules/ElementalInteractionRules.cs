@@ -48,10 +48,9 @@ public abstract class ElementalInteractionRules : Rule
     //        }
     //    }
     //}
-
-    protected List<ElementalEffect> GetNeighborTilesWithEffects(TileManager controller, Tile[,] tileGrid, int x, int y)
+    protected List<Tile> GetNeighborTilesWithEffects(TileManager controller, Tile[,] tileGrid, int x, int y)
     {
-        List<ElementalEffect> effectList = new List<ElementalEffect>();
+        List<Tile> effectList = new List<Tile>();
         for (int i = -1; i < 2; i++)
         {
             for (int j = -1; j < 2; j++)
@@ -66,13 +65,16 @@ public abstract class ElementalInteractionRules : Rule
                 {
                     continue;
                 }
-                effectList.Add(tileGrid[newX, newY].Current);
+                if (tileGrid[newX, newY].Current.SpreadRange > 0)
+                {
+                    effectList.Add(tileGrid[newX, newY]);
+                }
             }
         }
         return effectList;
     }
 
-    protected bool Contains(CellType[] cellTypes, CellType cellType)
+    protected bool Contains(CellTypeOld[] cellTypes, CellTypeOld cellType)
     {
         for (int i = 0; i < cellTypes.Length; i++)
         {
@@ -84,7 +86,7 @@ public abstract class ElementalInteractionRules : Rule
         return false;
     }
 
-    protected float CountValuesOfNeighbors(ElementalEffect[] elementalEffects, TileManager controller, Tile[,] tileGrid, int x, int y)
+    protected float CountValuesOfNeighbors(TileType[] elementalEffects, TileManager controller, Tile[,] tileGrid, int x, int y)
     {
         float count = 0;
         for (int i = -1; i < 2; i++)
@@ -112,7 +114,7 @@ public abstract class ElementalInteractionRules : Rule
                     {
                         modifier = 0.5f;
                     }
-                    count += effect.cellularAutomataValue * modifier;
+                    //count += effect.cellularAutomataValue * modifier;
                 }
             }
         }

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class UnitMovement : MonoBehaviour
 {
-    public event Action<Vector2Int, ElementalEffect> ChangedTileCoordinates;
+    public event Action<Vector2Int, TileType> ChangedTileCoordinates;
     [SerializeField] float moveSpeed = 0.1f;
-    [SerializeField] ElementalEffect walkingElementalEffect;
+    [SerializeField] TileType walkingElementalEffect;
     private bool newTilePositionDelivered = false;
     private void Start()
     {
