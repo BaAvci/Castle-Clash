@@ -14,7 +14,7 @@ public class UnitMovement : MonoBehaviour
     }
     private void Update()
     {
-        Movement();
+       // Movement();
     }
 
     private void Movement()
@@ -25,6 +25,14 @@ public class UnitMovement : MonoBehaviour
         var yPos = Math.Round(transform.position.z);
         var objxPos = (int)transform.position.x;
         var objyPos = (int)transform.position.z;
+        if (walkingElementalEffect != null)
+        {
+            ApplyEffectOnTile(xPos, yPos, objxPos, objyPos);
+        }
+    }
+
+    private void ApplyEffectOnTile(double xPos, double yPos, int objxPos, int objyPos)
+    {
         if (xPos > objxPos || yPos > objyPos)
         {
             if (!newTilePositionDelivered)
@@ -38,5 +46,4 @@ public class UnitMovement : MonoBehaviour
             newTilePositionDelivered = false;
         }
     }
-
 }

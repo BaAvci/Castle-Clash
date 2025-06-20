@@ -28,11 +28,14 @@ public class TileType : ScriptableObject
 
     protected void OnValidate()
     {
-        Dryness = ((int)TemperatureType + (int)MatterState) * TemperatureValue;
+        int tempTypeValue = (int)TemperatureType;
+        Dryness = 1;
         if (TemperatureType == TemperatureType.Warm)
         {
+            tempTypeValue += 1;
             Dryness *= -1;
         }
+        Dryness *= (tempTypeValue + (int)MatterState) * TemperatureValue;
         if (MatterState == MatterState.Solid)
         {
             SpreadRange = 0;

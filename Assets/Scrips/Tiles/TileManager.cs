@@ -5,6 +5,7 @@ using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
 using UnityEngine.Rendering;
 
 public class TileManager : MonoBehaviour
@@ -25,6 +26,7 @@ public class TileManager : MonoBehaviour
     private bool spacePressed;
 
     private WaitForSeconds wait;
+    private Camera camera;
 
     [SerializeField] private GameObject testUnit;
 
@@ -37,8 +39,9 @@ public class TileManager : MonoBehaviour
 
         tileData = tileData.OrderBy(c => c.Priority).ToArray();
 
+        camera = Camera.main;
         wait = new WaitForSeconds(simulationInterval);
-        testUnit.GetComponent<UnitMovement>().ChangedTileCoordinates += SetTileToType;
+        testUnit.GetComponent<UnitMovement>().ChangedTileCoordinates += SetTileToTypeByInteraction;
         StartCoroutine(Co_Simulation());
     }
 
@@ -79,6 +82,32 @@ public class TileManager : MonoBehaviour
         {
             spacePressed = true;
         }
+        if (Input.GetMouseButtonDown((int)MouseButton.Left))
+        {
+            TestTileDataInput(tileData[6]);
+        }
+        if (Input.GetMouseButtonDown((int)MouseButton.Right))
+        {
+            TestTileDataInput(tileData[1]);
+        }
+        if (Input.GetMouseButtonDown((int)MouseButton.Middle))
+        {
+            TestTileDataInput(tileData[3]);
+        }
+    }
+
+    private void TestTileDataInput(TileData tileData)
+    {
+        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, 20f))
+        {
+            TileManager conttoller = hit.collider.gameObject.GetComponentInParent<TileManager>();
+            if (conttoller != null)
+            {
+                Vector2Int pos = new(Mathf.RoundToInt(hit.point.x), Mathf.RoundToInt(hit.point.z));
+                conttoller.SetTileToTypeByInteraction(pos, tileData.TileType);
+            }
+        }
     }
 
     public bool IsIndexValid(Vector2Int index)
@@ -86,19 +115,28 @@ public class TileManager : MonoBehaviour
         return index.x >= 0 && index.x < gridSize.x
             && index.y >= 0 && index.y < gridSize.y;
     }
-
-    public void SetTileToType(Vector2Int tilePosition, TileType cellType)
-    {
-        tileObjectPooling[tileGrid[tilePosition.x, tilePosition.y].Current][tilePosition.x, tilePosition.y].SetActive(false);
-        tileGrid[tilePosition.x, tilePosition.y].Current = cellType;
-        tileObjectPooling[cellType][tilePosition.x, tilePosition.y].SetActive(true);
-    }
-
     public bool IsIndexValid(int x, int y)
     {
         return IsIndexValid(new Vector2Int(x, y));
     }
 
+    private void SetTileToTypeByInteraction(Vector2Int tilePosition, TileType tileType)
+    {
+        Tile tile = tileGrid[tilePosition.x, tilePosition.y];
+        tileObjectPooling[tile.Current][tilePosition.x, tilePosition.y].SetActive(false);
+        tileObjectPooling[tileType][tilePosition.x, tilePosition.y].SetActive(true);
+        tile.ReplaceTile(tileGrid, tilePosition, tileType);
+        tile.UpdateRemainingSpreadRange(this, ref tileGrid);
+    }
+
+
+
+    private void SetTileToTypePassivly(Vector2Int tilePosition, TileType tileType)
+    {
+        tileObjectPooling[tileGrid[tilePosition.x, tilePosition.y].Current][tilePosition.x, tilePosition.y].SetActive(false);
+        tileGrid[tilePosition.x, tilePosition.y].Current = tileType;
+        tileObjectPooling[tileType][tilePosition.x, tilePosition.y].SetActive(true);
+    }
     private void CalculateNextStates()
     {
         for (int i = 0; i < tileData.Length; i++)
@@ -112,7 +150,7 @@ public class TileManager : MonoBehaviour
         }
     }
 
-    public TileData GetCellData(TileType current)
+    private TileData GetCellData(TileType current)
     {
         return dictTileData[current];
     }
@@ -150,7 +188,7 @@ public class TileManager : MonoBehaviour
                 cell = tileGrid[x, y];
                 if (cell.Next != null)
                 {
-                    SetTileToType(new Vector2Int(x, y), cell.Next);
+                    SetTileToTypePassivly(new Vector2Int(x, y), cell.Next);
                     cell.Current = cell.Next;
                 }
 

@@ -9,7 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e8d1718b1e90b14eaab9ba8ed61b9f7, type: 3}
-  m_Name: AfterFireBurn
+  m_Script: {fileID: 11500000, guid: 9596bd043c94e014ea37e8a44e22fdf3, type: 3}
+  m_Name: Ice Fire
   m_EditorClassIdentifier: 
-  Timer: 5
+  Name: Ice Fire
+  TemperatureType: 2
+  MatterState: 1
+  Prefab: {fileID: 4077219156497056328, guid: 5761ac65ae6a96c4c983fa0ded3e0c36, type: 3}
+  TemperatureValue: 10
+  SpreadRange: 2
+  Dryness: 30

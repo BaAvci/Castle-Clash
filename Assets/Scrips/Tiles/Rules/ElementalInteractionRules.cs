@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
 
 public abstract class ElementalInteractionRules : Rule
 {
@@ -74,21 +75,9 @@ public abstract class ElementalInteractionRules : Rule
         return effectList;
     }
 
-    protected bool Contains(CellTypeOld[] cellTypes, CellTypeOld cellType)
+    protected List<Tile> GetNeighboursWithMatterState(TileManager controller, Tile[,] tileGrid, int x, int y, MatterState matterState)
     {
-        for (int i = 0; i < cellTypes.Length; i++)
-        {
-            if (cellTypes[i] == cellType)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    protected float CountValuesOfNeighbors(TileType[] elementalEffects, TileManager controller, Tile[,] tileGrid, int x, int y)
-    {
-        float count = 0;
+        List<Tile> tiles = new();
         for (int i = -1; i < 2; i++)
         {
             for (int j = -1; j < 2; j++)
@@ -103,21 +92,26 @@ public abstract class ElementalInteractionRules : Rule
                 {
                     continue;
                 }
-                foreach (var effect in elementalEffects)
+                if (x == 0 && y == 1)
                 {
-                    if (tileGrid[newX, newY].Current != effect)
-                    {
-                        return 0;
-                    }
-                    float modifier = 1;
-                    if (newX == 0 || newY == 0)
-                    {
-                        modifier = 0.5f;
-                    }
-                    //count += effect.cellularAutomataValue * modifier;
+                    Debug.Log("");
+                }
+                Vector2Int position = new(i, j);
+                int spreadControlValue;
+                if (Vector2Int.left == position || Vector2Int.up == position || Vector2Int.right == position || Vector2Int.down == position)
+                {
+                    spreadControlValue = 1;
+                }
+                else
+                {
+                    spreadControlValue = 2;
+                }
+                if (tileGrid[newX, newY].Current.MatterState == matterState && tileGrid[newX, newY].SpreadRangeRemaining >= spreadControlValue)
+                {
+                    tiles.Add(tileGrid[newX, newY]);
                 }
             }
         }
-        return count;
+        return tiles;
     }
 }

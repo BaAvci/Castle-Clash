@@ -9,6 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 533c9aae71e4b014badfff696b08c5ee, type: 3}
-  m_Name: ApplyFire
+  m_Script: {fileID: 11500000, guid: b26c360bea2bc3346b7c4acc93754c77, type: 3}
+  m_Name: IceFire
   m_EditorClassIdentifier: 
+  TileType: {fileID: 11400000, guid: 75638ffce3e5c7142a85efeb1a7d8142, type: 2}
+  Priority: 0
+  Rules:
+  - {fileID: 11400000, guid: 678886098a3ca4245b450570770c5fd3, type: 2}
+  ExecutionOrder: 0
