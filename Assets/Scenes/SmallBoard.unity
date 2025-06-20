@@ -400,13 +400,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1696993482}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: 0.23531182, y: -0, z: -0, w: 0.97192}
+  m_LocalPosition: {x: 4.89, y: 5.41, z: -6.87}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 27.22, y: 0, z: 0}
 --- !u!114 &1696993486
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -524,7 +524,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridSize: {x: 0, y: 0}
   simulationInterval: 1
-  simulateOnPressSpace: 0
+  simulateOnPressSpace: 1
   defaultType: {fileID: 11400000, guid: d73fc54b60346164c9e853389a4c5309, type: 2}
   tileData:
   - {fileID: 11400000, guid: b5e645c14dbdf8741b54aff05f4f0d1a, type: 2}
@@ -533,6 +533,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a4a8a7e533bd1f2418e084779d8b8cef, type: 2}
   - {fileID: 11400000, guid: c3b4a007615cd084a8e2708df8c65228, type: 2}
   - {fileID: 11400000, guid: 74ebbc4e8009b82409c26766b41dbeae, type: 2}
+  - {fileID: 11400000, guid: 6c16e710fda10bf46ba23cd55a6bf3d9, type: 2}
   defaultTilePrefab: {fileID: 4077219156497056328, guid: 0eb276f4091beb04ab6f1a952b6d7bc5, type: 3}
   testUnit: {fileID: 1505266601}
 --- !u!1660057539 &9223372036854775807

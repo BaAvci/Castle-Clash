@@ -16,6 +16,6 @@ MonoBehaviour:
   TemperatureType: 2
   MatterState: 0
   Prefab: {fileID: 4077219156497056328, guid: e12417893c6ee7343b630ea8600f789c, type: 3}
-  TemperatureValue: 10
+  TemperatureValue: 20
   SpreadRange: 0
-  Dryness: 20
+  Dryness: 40

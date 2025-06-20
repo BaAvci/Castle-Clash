@@ -87,18 +87,38 @@ public class Spread : ElementalInteractionRules
                 possibleTileTypes.Add(temp);
                 return;
             }
+            TemperatureType tileTemp = tileGrid[x, y].Current.TemperatureType;
 
             var tempResult = tileGrid[x, y].CurrentDryness;
             foreach (var item in possibleTileTypes)
             {
                 tempResult += calculatedTileTemps[item];
             }
-            if (Mathf.Abs(tileGrid[x, y].CurrentDryness) - Mathf.Abs(tempResult) <= 0)
+            int finalTemp = Mathf.Abs(tileGrid[x, y].CurrentDryness) - Mathf.Abs(tempResult);
+            TileType result = null;
+            switch (tileTemp)
             {
-                var tempType = tileGrid[x, y].Current.TemperatureType == TemperatureType.Warm ? TemperatureType.Cold : TemperatureType.Warm;
-                var result = possibleTileTypes.Where(tt => tt.TemperatureType == tempType).First();
+                case TemperatureType.Warm:
+                    if (finalTemp >= 0)
+                    {
+                        result = possibleTileTypes.Where(tt => tt.TemperatureType == TemperatureType.Warm).First();
+                    }
+                    break;
+                case TemperatureType.Cold:
+                    if (finalTemp < 0)
+                    {
+                        result = possibleTileTypes.Where(tt => tt.TemperatureType == TemperatureType.Cold).First();
+                    }
+                    break;
+            }
+            if (result != null)
+            {
                 possibleTileTypes.Clear();
                 possibleTileTypes.Add(result);
+            }
+            else
+            {
+                Debug.LogError("Solid and Plasma controll error.");
             }
         }
     }

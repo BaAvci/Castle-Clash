@@ -15,7 +15,7 @@ MonoBehaviour:
   Name: Ice Fire
   TemperatureType: 2
   MatterState: 1
-  Prefab: {fileID: 4077219156497056328, guid: 5761ac65ae6a96c4c983fa0ded3e0c36, type: 3}
+  Prefab: {fileID: 4077219156497056328, guid: 41ee76963d4a3524a87c9349ae206e4f, type: 3}
   TemperatureValue: 10
   SpreadRange: 2
   Dryness: 30
