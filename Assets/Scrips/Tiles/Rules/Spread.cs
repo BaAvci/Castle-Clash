@@ -58,7 +58,29 @@ public class Spread : ElementalInteractionRules
                 }
                 else
                 {
-                    Debug.LogError("Something bad happend!");
+                    Debug.LogError($"Tile with error: {new Vector2Int(x, y)}");
+                    Debug.LogError($"Current Tile Data: {tileGrid[x, y].Current}");
+                    Debug.LogError($"All neighbouring tiles: {neighbouringTiles.Count}");
+                    Debug.LogError($"All tiles that affect current tile: {calculatedTileTemps.Count}");
+                    Debug.LogError($"All possible that can actually affect current tile: {possibleTileTypes.Count}");
+                    for (int i = -1; i < 2; i++)
+                    {
+                        for (int j = -1; j < 2; j++)
+                        {
+                            if (i == 0 && j == 0)
+                            {
+                                continue;
+                            }
+                            int newX = x + i;
+                            int newY = y + j;
+                            if (!controller.IsIndexValid(newX, newY))
+                            {
+                                continue;
+                            }
+                            Debug.LogError($"Position of neighboring tile: {new Vector2Int(newX, newY)}");
+                            Debug.LogError($"TielType of neighboring tile: {tileGrid[newX, newY].Current}");
+                        }
+                    }
                 }
             }
         }
@@ -138,14 +160,10 @@ public class Spread : ElementalInteractionRules
             {
                 continue;
             }
-            if (!tiletempValues.TryAdd(matterStateTile.Current, matterStateTile.Current.TemperatureValue))
+            int alteredTempValue = matterStateTile.Current.TemperatureType == TemperatureType.Warm ? matterStateTile.Current.TemperatureValue * -1 : matterStateTile.Current.TemperatureValue;
+            if (!tiletempValues.TryAdd(matterStateTile.Current, alteredTempValue))
             {
-                int tempValue = matterStateTile.Current.TemperatureValue;
-                if (matterStateTile.Current.TemperatureType == TemperatureType.Warm)
-                {
-                    tempValue *= -1;
-                }
-                tiletempValues[matterStateTile.Current] += tempValue;
+                tiletempValues[matterStateTile.Current] += alteredTempValue;
             }
         }
         return tiletempValues;
@@ -164,7 +182,7 @@ public class Spread : ElementalInteractionRules
         List<TileType> keyList = new List<TileType>();
         foreach (var kvp in dict)
         {
-            if (kvp.Value > maxValue)
+            if (Mathf.Abs(kvp.Value) > maxValue)
             {
                 maxValue = kvp.Value;
                 keyList.Clear();
