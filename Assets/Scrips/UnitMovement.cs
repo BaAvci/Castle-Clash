@@ -14,7 +14,7 @@ public class UnitMovement : MonoBehaviour
     }
     private void Update()
     {
-       // Movement();
+        Movement();
     }
 
     private void Movement()

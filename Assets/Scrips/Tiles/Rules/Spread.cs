@@ -40,7 +40,7 @@ public class Spread : ElementalInteractionRules
         {
             calculatedTileTemps = CalculateMatterValues(neighbouringTiles);
             possibleTileTypes = GetKeyOfUniqueHighestValue(calculatedTileTemps);
-
+            // TODO: Implement the recalculation of remaining spread. Maybe implement as rule instead of "on effect"
             SelfTileSolidTempValueCheck(tileGrid, x, y, selectedTileMatterState, calculatedTileTemps, possibleTileTypes);
 
             if (!possibleTileTypes.Contains(tileGrid[x, y].Current))
@@ -111,36 +111,43 @@ public class Spread : ElementalInteractionRules
             }
             TemperatureType tileTemp = tileGrid[x, y].Current.TemperatureType;
 
-            var tempResult = tileGrid[x, y].CurrentDryness;
+            int tempResult = 0;
             foreach (var item in possibleTileTypes)
             {
                 tempResult += calculatedTileTemps[item];
             }
             int finalTemp = Mathf.Abs(tileGrid[x, y].CurrentDryness) - Mathf.Abs(tempResult);
             TileType result = null;
-            switch (tileTemp)
+            if (possibleTileTypes.Count == 1 && possibleTileTypes[0].TemperatureType != tileGrid[x, y].Current.TemperatureType)
             {
-                case TemperatureType.Warm:
-                    if (finalTemp >= 0)
-                    {
-                        result = possibleTileTypes.Where(tt => tt.TemperatureType == TemperatureType.Warm).First();
-                    }
-                    break;
-                case TemperatureType.Cold:
-                    if (finalTemp < 0)
-                    {
-                        result = possibleTileTypes.Where(tt => tt.TemperatureType == TemperatureType.Cold).First();
-                    }
-                    break;
-            }
-            if (result != null)
-            {
-                possibleTileTypes.Clear();
-                possibleTileTypes.Add(result);
+                tileGrid[x, y].CurrentDryness = finalTemp;
             }
             else
             {
-                Debug.LogError("Solid and Plasma controll error.");
+                switch (tileTemp)
+                {
+                    case TemperatureType.Warm:
+                        if (finalTemp < 0)
+                        {
+                            result = possibleTileTypes.Where(tt => tt.TemperatureType == TemperatureType.Warm).First();
+                        }
+                        break;
+                    case TemperatureType.Cold:
+                        if (finalTemp >= 0)
+                        {
+                            result = possibleTileTypes.Where(tt => tt.TemperatureType == TemperatureType.Cold).First();
+                        }
+                        break;
+                }
+                if (result != null)
+                {
+                    possibleTileTypes.Clear();
+                    possibleTileTypes.Add(result);
+                }
+                else
+                {
+                    Debug.LogError("Solid and Plasma controll error.");
+                }
             }
         }
     }
@@ -182,13 +189,13 @@ public class Spread : ElementalInteractionRules
         List<TileType> keyList = new List<TileType>();
         foreach (var kvp in dict)
         {
-            if (Mathf.Abs(kvp.Value) > maxValue)
+            if (Mathf.Abs(kvp.Value) > Mathf.Abs(maxValue))
             {
                 maxValue = kvp.Value;
                 keyList.Clear();
                 keyList.Add(kvp.Key);
             }
-            else if (kvp.Value == maxValue)
+            else if (Mathf.Abs(kvp.Value) == Mathf.Abs(maxValue))
             {
                 keyList.Add(kvp.Key);
             }
