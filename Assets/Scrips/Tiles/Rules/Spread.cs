@@ -7,6 +7,7 @@ public class Spread : ElementalInteractionRules
 {
     public override void ExecuteRule(TileManager controller, Tile[,] tileGrid, int x, int y, TileType tileType)
     {
+        // Check if any liquid tiles exists, if they do only calculate them else check for plasma and solid
         List<Tile> neighbouringTiles = CalculateTilechange(controller, tileGrid, x, y, MatterState.Liquid);
         if (tileGrid[x, y].Next != null || neighbouringTiles.Count > 0 || (neighbouringTiles.Count == 1 && tileGrid[x, y] == neighbouringTiles[0]))
         {
@@ -24,12 +25,6 @@ public class Spread : ElementalInteractionRules
 
         //Tiletypes that can be the current tiles next type.
         List<TileType> possibleTileTypes;
-
-        if (new Vector2Int(0, 1) == tileGrid[x, y].Index)
-        {
-            Debug.Log("");
-        }
-
         neighbouringTiles = GetNeighboursWithMatterState(controller, tileGrid, x, y, matterState);
 
         if (selectedTileMatterState == matterState)
@@ -40,11 +35,11 @@ public class Spread : ElementalInteractionRules
         {
             calculatedTileTemps = CalculateMatterValues(neighbouringTiles);
             possibleTileTypes = GetKeyOfUniqueHighestValue(calculatedTileTemps);
-            // TODO: Implement the recalculation of remaining spread. Maybe implement as rule instead of "on effect"
             SelfTileSolidTempValueCheck(tileGrid, x, y, selectedTileMatterState, calculatedTileTemps, possibleTileTypes);
 
             if (!possibleTileTypes.Contains(tileGrid[x, y].Current))
             {
+                // If there is only one possible TileType select that else select at random
                 if (possibleTileTypes.Count == 1)
                 {
                     var partenTile = neighbouringTiles.Where(t => t.Current == possibleTileTypes[0]).First();
@@ -56,7 +51,8 @@ public class Spread : ElementalInteractionRules
                     var partenTile = neighbouringTiles.Where(t => t.Current == nextType).First();
                     tileGrid[x, y].SetNext(partenTile);
                 }
-                else
+#if UNITY_EDITOR
+                else // Debug section
                 {
                     Debug.LogError($"Tile with error: {new Vector2Int(x, y)}");
                     Debug.LogError($"Current Tile Data: {tileGrid[x, y].Current}");
@@ -82,6 +78,7 @@ public class Spread : ElementalInteractionRules
                         }
                     }
                 }
+#endif
             }
         }
         return neighbouringTiles;
@@ -102,7 +99,9 @@ public class Spread : ElementalInteractionRules
     {
         if (selectedTileMatterState == MatterState.Solid && tileGrid[x, y].Current.TemperatureType != TemperatureType.Normal)
         {
-            if (possibleTileTypes.Count == 1 && possibleTileTypes[0].TemperatureType == tileGrid[x, y].Current.TemperatureType)
+            // If there is only one option just replace it with that
+            // TODO: Counter TemperatueTypes should not do that. FIRE should still take some time to take over ICE.
+            if (possibleTileTypes.Count == 1)
             {
                 var temp = possibleTileTypes[0];
                 possibleTileTypes.Clear();
@@ -118,37 +117,35 @@ public class Spread : ElementalInteractionRules
             }
             int finalTemp = Mathf.Abs(tileGrid[x, y].CurrentDryness) - Mathf.Abs(tempResult);
             TileType result = null;
-            if (possibleTileTypes.Count == 1 && possibleTileTypes[0].TemperatureType != tileGrid[x, y].Current.TemperatureType)
+            // Somehow if i invert this if and remove the else it does not work correctly anymore. But dont care
+            // I just want to move on to the next task.
+
+            // Depending on the Temperature type of an solid tile, the same temp type gets priority over it
+            switch (tileTemp)
             {
-                tileGrid[x, y].CurrentDryness = finalTemp;
+                case TemperatureType.Warm:
+                    if (finalTemp < 0)
+                    {
+                        result = possibleTileTypes.Where(tt => tt.TemperatureType == TemperatureType.Warm).First();
+                    }
+                    break;
+                case TemperatureType.Cold:
+                    if (finalTemp >= 0)
+                    {
+                        result = possibleTileTypes.Where(tt => tt.TemperatureType == TemperatureType.Cold).First();
+                    }
+                    break;
+            }
+            if (result != null)
+            {
+                possibleTileTypes.Clear();
+                possibleTileTypes.Add(result);
             }
             else
             {
-                switch (tileTemp)
-                {
-                    case TemperatureType.Warm:
-                        if (finalTemp < 0)
-                        {
-                            result = possibleTileTypes.Where(tt => tt.TemperatureType == TemperatureType.Warm).First();
-                        }
-                        break;
-                    case TemperatureType.Cold:
-                        if (finalTemp >= 0)
-                        {
-                            result = possibleTileTypes.Where(tt => tt.TemperatureType == TemperatureType.Cold).First();
-                        }
-                        break;
-                }
-                if (result != null)
-                {
-                    possibleTileTypes.Clear();
-                    possibleTileTypes.Add(result);
-                }
-                else
-                {
-                    Debug.LogError("Solid and Plasma controll error.");
-                }
+                Debug.LogError("Solid and Plasma controll error.");
             }
+
         }
     }
 
