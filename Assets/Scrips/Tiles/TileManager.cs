@@ -1,105 +1,115 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
 using UnityEngine.Rendering;
 
 public class TileManager : MonoBehaviour
 {
-    private Dictionary<ElementalEffect, TileData> dictTiles;
-    public Action<Vector2Int> UnitPositionUpdate;
-    [SerializeField] private List<UnitMovement> units;
-    [SerializeField] private TileData[] tileDatas;
+    [SerializeField] private Vector2Int gridSize;
+    [SerializeField] private float simulationInterval = 1f;
+    [SerializeField] private bool simulateOnPressSpace = false;
+
+    [Header("Tile Types")]
+    [SerializeField] private TileType defaultType;
+    [SerializeField] private TileData[] tileData;
 
     [SerializeField] private GameObject defaultTilePrefab;
-    [SerializeField] private ElementalEffect defaultElementalEffect;
-    private Vector2Int gridSize;
-    private Tile[,] tileGrid;
-    private TileManager tileManager;
+    [SerializeField] private Dictionary<TileType, TileData> dictTileData = new();
 
-    // TEMP
+    private Tile[,] tileGrid;
+    private Dictionary<TileType, GameObject[,]> tileObjectPooling;
+    private bool spacePressed;
+
+    private WaitForSeconds wait;
+    private Camera camera;
+
     [SerializeField] private GameObject testUnit;
 
-    private void Awake()
+    void Start()
     {
-        dictTiles = new();
-        foreach (var cell in tileDatas)
+        foreach (var tile in tileData)
         {
-            dictTiles.Add(cell.ElementalEffect, cell);
+            dictTileData.Add(tile.TileType, tile);
         }
-        testUnit.GetComponent<UnitMovement>().ChangedTileCoordinates += CalculateNextStateUnit;
-        units = new();
+
+        tileData = tileData.OrderBy(c => c.Priority).ToArray();
+
+        camera = Camera.main;
+        wait = new WaitForSeconds(simulationInterval);
+        testUnit.GetComponent<UnitMovement>().ChangedTileCoordinates += SetTileToTypeByInteraction;
+        StartCoroutine(Co_Simulation());
     }
-
-    private void Start()
-    {
-        StartCoroutine(Co_CellularAutomata());
-    }
-
-    private void Update()
-    {
-        Debug.Log("test");
-    }
-
-    private void CalculateNextStateUnit(Vector2Int unitCoordinates, ElementalEffect[] elementalEffects)
-    {
-        for (int i = 0; i < tileDatas.Length; i++)
-        {
-            if (tileDatas[i].Priority < 0)
-            {
-                continue;
-            }
-
-            tileDatas[i].ExecuteRules(this, tileGrid, elementalEffects, unitCoordinates.x, unitCoordinates.y);
-        }
-        UpdateTile();
-    }
-
-    private void UpdateTile()
-    {
-        Tile tile;
-        for (int x = 0; x < gridSize.x; x++)
-        {
-            for (int y = 0; y < gridSize.y; y++)
-            {
-                tile = tileGrid[x, y];
-                tile.Current = tile.Next ? tile.Next : tile.Current;
-                tile.Next = null;
-                tile.Material = dictTiles[tile.Current].TileMaterial;
-            }
-        }
-    }
-
-    //public void AddUnits(GameObject newUnit, Vector2Int coordinates)
-    //{
-    //    GameObject createdUnit = Instantiate(newUnit, new Vector3(coordinates.x, 0, coordinates.y), Quaternion.identity);
-    //    UnitMovement unitMovement = createdUnit.GetComponent<UnitMovement>();
-    //    unitMovement.ChangedTileCoordinates += UpdateTile;
-    //    units.Add(unitMovement);
-    //}
 
     public void CreateGrid(Vector2Int gridSize)
     {
         this.gridSize = gridSize;
         tileGrid = new Tile[gridSize.x, gridSize.y];
-        for (int x = 0; x < gridSize.x; x++)
+        tileObjectPooling = new();
+        foreach (var tile in tileData)
         {
-            for (int y = 0; y < gridSize.y; y++)
+            tileObjectPooling[tile.TileType] = new GameObject[gridSize.x, gridSize.y];
+            for (int x = 0; x < gridSize.x; x++)
             {
-                AddTile(x, y);
+                for (int y = 0; y < gridSize.y; y++)
+                {
+                    AddTile(tile.TileType, x, y);
+                }
             }
         }
     }
 
-    private void AddTile(int x, int y)
+    private void AddTile(TileType tileType, int x, int y)
     {
-        GameObject newTile = Instantiate(defaultTilePrefab, new Vector3(x, 0, y), Quaternion.identity, this.transform);
+        GameObject newTile = Instantiate(tileType.Prefab, new Vector3(x, 0, y), Quaternion.identity, this.transform);
+        if (defaultTilePrefab != tileType.Prefab)
+        {
+            newTile.SetActive(false);
+        }
         newTile.GetComponentInChildren<TextMeshPro>().text = $"{x},{y}";
-        tileGrid[x, y] = new Tile(defaultElementalEffect, newTile);
-        //tiles.Add(new Vector2Int(x, y), new TileData(newTile));
+        tileGrid[x, y] = new Tile(defaultType, new Vector2Int(x, y));
+        tileObjectPooling[tileType][x, y] = newTile;
     }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            spacePressed = true;
+        }
+        if (Input.GetMouseButtonDown((int)MouseButton.Left))
+        {
+            TestTileDataInput(tileData[6]);
+        }
+        if (Input.GetMouseButtonDown((int)MouseButton.Right))
+        {
+            TestTileDataInput(tileData[1]);
+        }
+        if (Input.GetMouseButtonDown((int)MouseButton.Middle))
+        {
+            TestTileDataInput(tileData[3]);
+        }
+    }
+
+    private void TestTileDataInput(TileData tileData)
+    {
+        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, 20f))
+        {
+            TileManager conttoller = hit.collider.gameObject.GetComponentInParent<TileManager>();
+            if (conttoller != null)
+            {
+                Vector2Int pos = new(Mathf.RoundToInt(hit.point.x), Mathf.RoundToInt(hit.point.z));
+                conttoller.SetTileToTypeByInteraction(pos, tileData.TileType);
+            }
+        }
+    }
+
     public bool IsIndexValid(Vector2Int index)
     {
         return index.x >= 0 && index.x < gridSize.x
@@ -110,17 +120,85 @@ public class TileManager : MonoBehaviour
         return IsIndexValid(new Vector2Int(x, y));
     }
 
-    private IEnumerator Co_CellularAutomata()
+    private void SetTileToTypeByInteraction(Vector2Int tilePosition, TileType tileType)
     {
-        UpdateTile();
-        yield return 0;
+        Tile tile = tileGrid[tilePosition.x, tilePosition.y];
+        tileObjectPooling[tile.Current][tilePosition.x, tilePosition.y].SetActive(false);
+        tileObjectPooling[tileType][tilePosition.x, tilePosition.y].SetActive(true);
+        tile.ReplaceTile(tileGrid, tilePosition, tileType);
+        tile.UpdateRemainingSpreadRange(this, ref tileGrid);
     }
 
-    private void OnDrawGizmos()
+
+
+    private void SetTileToTypePassivly(Vector2Int tilePosition, TileType tileType)
     {
-        var tileSize = defaultTilePrefab.transform.localScale / 2;
-        tileSize.y = 0;
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(Vector3.zero - tileSize, new Vector3(gridSize.x - 1, 0, gridSize.y - 1) + tileSize);
+        tileObjectPooling[tileGrid[tilePosition.x, tilePosition.y].Current][tilePosition.x, tilePosition.y].SetActive(false);
+        tileGrid[tilePosition.x, tilePosition.y].Current = tileType;
+        tileObjectPooling[tileType][tilePosition.x, tilePosition.y].SetActive(true);
+    }
+    private void CalculateNextStates()
+    {
+        for (int i = 0; i < tileData.Length; i++)
+        {
+            if (tileData[i].Priority < 0)
+            {
+                continue;
+            }
+
+            tileData[i].ExecuteRules(this, tileGrid);
+        }
+    }
+
+    private TileData GetCellData(TileType current)
+    {
+        return dictTileData[current];
+    }
+
+    private IEnumerator Co_Simulation()
+    {
+        while (true)
+        {
+            if (simulateOnPressSpace)
+            {
+                while (!spacePressed)
+                {
+                    yield return null;
+                }
+                spacePressed = false;
+            }
+            else
+            {
+                yield return wait;
+            }
+
+            // Simulation
+            CalculateNextStates();
+            UpdateStates();
+        }
+    }
+
+    private void UpdateStates()
+    {
+        Tile cell;
+        for (int x = 0; x < gridSize.x; x++)
+        {
+            for (int y = 0; y < gridSize.y; y++)
+            {
+                cell = tileGrid[x, y];
+                if (cell.Next != null)
+                {
+                    SetTileToTypePassivly(new Vector2Int(x, y), cell.Next);
+                    cell.Current = cell.Next;
+                }
+
+                cell.Next = null;
+            }
+        }
+    }
+
+    private void OnValidate()
+    {
+        wait = new WaitForSeconds(simulationInterval);
     }
 }

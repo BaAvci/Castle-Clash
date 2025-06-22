@@ -3,9 +3,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "SlideRule", menuName = "Cellular Automata/Sand Simulation/Slide Rule")]
 public class SlideRule : SimulationRule
 {
-    public CellType[] DisplaceableTypes;
+    public CellTypeOld[] DisplaceableTypes;
 
-    public override void ExecuteRule(AutomataController controller, Cell[,] cellGrid, int x, int y, CellType cellType)
+    public override void ExecuteRule(AutomataController controller, Cell[,] cellGrid, int x, int y, CellTypeOld cellType)
     {
         if (cellGrid[x, y].Next.HasValue)
         {
@@ -18,8 +18,8 @@ public class SlideRule : SimulationRule
         Cell leftCell = leftValid ? cellGrid[x - 1, y] : null;
         Cell rightCell = rightValid ? cellGrid[x + 1, y] : null;
 
-        CellType? left = leftValid ? leftCell.Next : null;
-        CellType? right = rightValid ? rightCell.Next : null;
+        CellTypeOld? left = leftValid ? leftCell.Next : null;
+        CellTypeOld? right = rightValid ? rightCell.Next : null;
 
         left ??= leftValid ? leftCell.Current : null;
         right ??= rightValid ? rightCell.Current : null;
@@ -27,7 +27,7 @@ public class SlideRule : SimulationRule
         bool leftAvailable = left.HasValue && Contains(DisplaceableTypes, left.Value);
         bool rightAvailable = right.HasValue && Contains(DisplaceableTypes, right.Value);
 
-        CellType replacementType = CellType.Air;
+        CellTypeOld replacementType = CellTypeOld.Air;
 
         if (leftAvailable && rightAvailable)
         {

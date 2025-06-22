@@ -3,7 +3,7 @@ using UnityEngine;
 
 public abstract class SimulationRule : RuleCopy
 {
-    protected bool Contains(CellType[] cellTypes, CellType cellType)
+    protected bool Contains(CellTypeOld[] cellTypes, CellTypeOld cellType)
     {
         for (int i = 0; i < cellTypes.Length; i++)
         {

@@ -16,7 +16,7 @@ public abstract class GameOfLifeRule : RuleCopy
 
                 int newX = x + i;
                 int newY = y + j;
-                if (automataController.IsIndexValid(newX, newY) && cellGrid[newX, newY].Current == CellType.Alive)
+                if (automataController.IsIndexValid(newX, newY) && cellGrid[newX, newY].Current == CellTypeOld.Alive)
                 {
                     {
                         count++;

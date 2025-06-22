@@ -3,11 +3,11 @@ using UnityEngine;
 public class InputController : MonoBehaviour
 {
 
-    public CellType Mouse0 = CellType.Alive;
-    public CellType Mouse1 = CellType.Dead;
+    public CellTypeOld Mouse0 = CellTypeOld.Alive;
+    public CellTypeOld Mouse1 = CellTypeOld.Dead;
 
-    public CellType ShiftMouse0 = CellType.Alive;
-    public CellType ShiftMouse1 = CellType.Dead;
+    public CellTypeOld ShiftMouse0 = CellTypeOld.Alive;
+    public CellTypeOld ShiftMouse1 = CellTypeOld.Dead;
 
     private Camera camera;
 
@@ -44,7 +44,7 @@ public class InputController : MonoBehaviour
             }
         }
     }
-    private void PaintPixel(CellType cellType)
+    private void PaintPixel(CellTypeOld cellType)
     {
         Ray ray = camera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit, 20f))

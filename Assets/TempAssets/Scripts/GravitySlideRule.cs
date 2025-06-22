@@ -3,9 +3,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "GravitySlideRule", menuName = "Cellular Automata/Sand Simulation/GravitySlideRule")]
 public class GravitySlideRule : SimulationRule
 {
-    public CellType[] DisplaceableTypes;
+    public CellTypeOld[] DisplaceableTypes;
 
-    public override void ExecuteRule(AutomataController controller, Cell[,] cellGrid, int x, int y, CellType cellType)
+    public override void ExecuteRule(AutomataController controller, Cell[,] cellGrid, int x, int y, CellTypeOld cellType)
     {
         if (cellGrid[x, y].Next.HasValue)
         {
@@ -20,15 +20,15 @@ public class GravitySlideRule : SimulationRule
         bool belowLeftValid = controller.IsIndexValid(x - 1, y - 1);
         bool belowRightValid = controller.IsIndexValid(x + 1, y - 1);
 
-        CellType? belowLeft = belowLeftValid ? cellGrid[x - 1, y - 1].Next : null;
-        CellType? belowRight = belowRightValid ? cellGrid[x + 1, y - 1].Next : null;
+        CellTypeOld? belowLeft = belowLeftValid ? cellGrid[x - 1, y - 1].Next : null;
+        CellTypeOld? belowRight = belowRightValid ? cellGrid[x + 1, y - 1].Next : null;
         belowLeft ??= belowLeftValid ? cellGrid[x - 1, y - 1].Current : null;
         belowRight ??= belowRightValid ? cellGrid[x + 1, y - 1].Current : null;
 
         bool belowLeftAvailable = belowLeft.HasValue && Contains(DisplaceableTypes, belowLeft.Value);
         bool belowRightAvailable = belowRight.HasValue && Contains(DisplaceableTypes, belowRight.Value);
 
-        CellType replacementType = CellType.Air;
+        CellTypeOld replacementType = CellTypeOld.Air;
 
         if (belowLeftAvailable && belowRightAvailable)
         {

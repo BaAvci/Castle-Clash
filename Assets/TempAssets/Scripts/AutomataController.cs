@@ -5,7 +5,7 @@ using System.Linq;
 using Unity.Mathematics;
 using UnityEngine;
 
-public enum CellType
+public enum CellTypeOld
 {
     // Game of Life
     Dead = 0,
@@ -22,10 +22,10 @@ public class Cell
 {
     public Vector2Int Index;
 
-    public CellType Current;
-    public CellType? Next;
+    public CellTypeOld Current;
+    public CellTypeOld? Next;
 
-    public Cell(CellType defaultType)
+    public Cell(CellTypeOld defaultType)
     {
         Current = defaultType;
     }
@@ -38,7 +38,7 @@ public class AutomataController : MonoBehaviour
     [SerializeField] private bool simulateOnPressSpace = false;
 
     [Header("Cell Types")]
-    [SerializeField] private CellType defaultType = CellType.Dead;
+    [SerializeField] private CellTypeOld defaultType = CellTypeOld.Dead;
     [SerializeField] private CellData[] cellData;
 
     private Texture2D texture;
@@ -46,7 +46,7 @@ public class AutomataController : MonoBehaviour
     private bool spacePressed;
 
     private WaitForSeconds wait;
-    private Dictionary<CellType, CellData> dictCellDate = new();
+    private Dictionary<CellTypeOld, CellData> dictCellDate = new();
 
     void Start()
     {
@@ -90,7 +90,7 @@ public class AutomataController : MonoBehaviour
             && index.y >= 0 && index.y < dimensions.y;
     }
 
-    public void SetPixelToType(int x, int y, CellType cellType)
+    public void SetPixelToType(int x, int y, CellTypeOld cellType)
     {
         cellGrid[x, y].Current = cellType;
 
@@ -101,7 +101,8 @@ public class AutomataController : MonoBehaviour
         }
     }
 
-    public void SetPixelToType(Vector3 position, CellType cellType)
+    //The Method that takes the input and changes the pixel
+    public void SetPixelToType(Vector3 position, CellTypeOld cellType)
     {
         Vector3 bottomLeft = transform.position + new Vector3(-5 * transform.localScale.x, -5 * transform.localScale.y);
         float deltaX = position.x - bottomLeft.x;
@@ -140,7 +141,7 @@ public class AutomataController : MonoBehaviour
         }
     }
 
-    public CellData GetCellData(CellType current)
+    public CellData GetCellData(CellTypeOld current)
     {
         return dictCellDate[current];
     }

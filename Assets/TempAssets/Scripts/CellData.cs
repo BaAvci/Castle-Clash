@@ -6,10 +6,10 @@ public enum ExecutionOrderCOPY
     UpLineByLine
 }
 
-[CreateAssetMenu(fileName = "CellData", menuName = "Cellular Automata/CellData")]
+[CreateAssetMenu(fileName = "CellData", menuName = "Cellular Automata/CellData2")]
 public class CellData : ScriptableObject
 {
-    public CellType CellType;
+    public CellTypeOld CellType;
     public Color PixelColor = Color.black;
 
     public int Priority = 0;
