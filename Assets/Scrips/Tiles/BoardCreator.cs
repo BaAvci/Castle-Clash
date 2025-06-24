@@ -9,6 +9,7 @@ public class BoardCreator : MonoBehaviour
 {
     [SerializeField] private Vector2Int boardSize;
     [SerializeField] private float terrainHeight = 25;
+    [SerializeField] private int randomSeed = 1;
     private TileManager tileManager;
     private TerrainBase terrainCreator;
 
@@ -17,6 +18,6 @@ public class BoardCreator : MonoBehaviour
         tileManager = GetComponentInChildren<TileManager>();
         tileManager.CreateGrid(boardSize);
         terrainCreator = GetComponentInChildren<TerrainSimple>();
-        terrainCreator.CreateEnviroment(boardSize, terrainHeight);
+        terrainCreator.CreateEnviroment(boardSize, terrainHeight, randomSeed);
     }
 }

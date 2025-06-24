@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using Unity.Mathematics;
 using Unity.VisualScripting;
@@ -39,23 +40,25 @@ public abstract class TerrainBase : MonoBehaviour
         _meshRenderer = GetComponent<MeshRenderer>();
     }
 
-    public void CreateEnviroment(Vector2Int tileGridSize, float noiseHeight)
+    public void CreateEnviroment(Vector2Int tileGridSize, float noiseHeight, int randomSeed)
     {
         float minHeight, maxHeight;
         this.noiseHeight = noiseHeight;
         CalculateTileGridPosition(tileGridSize);
-        GenerateHeightMap(out minHeight, out maxHeight);
+        GenerateHeightMap(out minHeight, out maxHeight, randomSeed);
 
         GenerateTexture(minHeight, maxHeight);
 
         GenerateMesh();
     }
 
-    protected virtual void GenerateHeightMap(out float minHeight, out float maxHeight)
+    protected virtual void GenerateHeightMap(out float minHeight, out float maxHeight, int randomSeed)
     {
         maxHeight = float.MinValue;
         minHeight = float.MaxValue;
-
+        System.Random rand = new System.Random(randomSeed);
+        int offset = rand.Next();
+        //offset = 0;
         heightMap = new float[textureResolution, textureResolution];
         float noiseMultiplier = 1f / (_noiseScale * textureResolution);   //Maybe _textureResolution?
 
@@ -72,7 +75,9 @@ public abstract class TerrainBase : MonoBehaviour
                 float height = 0;
                 for (int o = 1; o <= _noiseOctaves; o++)
                 {
-                    float noiseValue = Mathf.PerlinNoise(x * o * noiseMultiplier, y * o * noiseMultiplier); //Gets perlin noise value
+                    float xCoord = x * o * noiseMultiplier;
+                    float yCoord = y * o * noiseMultiplier;
+                    float noiseValue = Mathf.PerlinNoise(xCoord, yCoord); //Gets perlin noise value
                     noiseValue *= noiseHeight; //Before: 0-1. Now: 0 - noiseHeight
                     noiseValue /= o;            //Makes the noise value less impactful with each octave
 
