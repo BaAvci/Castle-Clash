@@ -42,10 +42,17 @@ public abstract class TerrainBase : MonoBehaviour
 
     public void CreateEnviroment(Vector2Int tileGridSize, float noiseHeight, int randomSeed)
     {
-        float minHeight, maxHeight;
+        if (_meshRenderer == null)
+        {
+            _meshRenderer = GetComponent<MeshRenderer>();
+        }
+        if (_meshFilter == null)
+        {
+            _meshFilter = GetComponent<MeshFilter>();
+        }
         this.noiseHeight = noiseHeight;
         CalculateTileGridPosition(tileGridSize);
-        GenerateHeightMap(out minHeight, out maxHeight, randomSeed);
+        GenerateHeightMap(out float minHeight, out float maxHeight, randomSeed);
 
         GenerateTexture(minHeight, maxHeight);
 

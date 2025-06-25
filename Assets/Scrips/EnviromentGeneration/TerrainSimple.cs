@@ -31,12 +31,12 @@ public class TerrainSimple : TerrainBase
         texture.SetPixels32(colors);
         texture.Apply();
 
-        _meshRenderer.material.SetTexture("_HeightMap", texture);
-        _meshRenderer.material.SetFloat("_Threshold", _bottomLayer.HeighThreshold);
+        _meshRenderer.sharedMaterial.SetTexture("_HeightMap", texture);
+        _meshRenderer.sharedMaterial.SetFloat("_Threshold", _bottomLayer.HeighThreshold);
     }
 
     private void OnValidate()
     {
-        _meshRenderer.material.SetFloat("_Threshold", _bottomLayer.HeighThreshold);
+        _meshRenderer.sharedMaterial.SetFloat("_Threshold", _bottomLayer.HeighThreshold);
     }
 }

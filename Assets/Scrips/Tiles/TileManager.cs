@@ -76,7 +76,7 @@ public class TileManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -128,8 +128,6 @@ public class TileManager : MonoBehaviour
         tile.ReplaceTile(tileGrid, tilePosition, tileType);
         tile.UpdateRemainingSpreadRange(this, ref tileGrid);
     }
-
-
 
     private void SetTileToTypePassivly(Vector2Int tilePosition, TileType tileType)
     {
