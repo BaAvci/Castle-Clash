@@ -56,9 +56,10 @@ public abstract class TerrainBase : MonoBehaviour
     {
         maxHeight = float.MinValue;
         minHeight = float.MaxValue;
-        System.Random rand = new System.Random(randomSeed);
-        int offset = rand.Next();
-        //offset = 0;
+
+        System.Random rand = new(randomSeed);
+        float offset = (float)rand.NextDouble();
+
         heightMap = new float[textureResolution, textureResolution];
         float noiseMultiplier = 1f / (_noiseScale * textureResolution);   //Maybe _textureResolution?
 
@@ -77,7 +78,7 @@ public abstract class TerrainBase : MonoBehaviour
                 {
                     float xCoord = x * o * noiseMultiplier;
                     float yCoord = y * o * noiseMultiplier;
-                    float noiseValue = Mathf.PerlinNoise(xCoord, yCoord); //Gets perlin noise value
+                    float noiseValue = Mathf.PerlinNoise(xCoord + offset, yCoord + offset); //Gets perlin noise value
                     noiseValue *= noiseHeight; //Before: 0-1. Now: 0 - noiseHeight
                     noiseValue /= o;            //Makes the noise value less impactful with each octave
 
