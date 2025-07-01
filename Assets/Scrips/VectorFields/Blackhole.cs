@@ -1,16 +1,22 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.VFX;
 
 public class Blackhole : VectorField
 {
     private Spiral spiral;
-    protected override void Start()
+    protected override void Awake()
     {
-        base.Start();
-        diameter = (vectorFieldSize.x + vectorFieldSize.z);
-        vfxAsset.SetFloat("blackHoleSize", diameter);
-        vfxAsset.enabled = true;
+        base.Awake();
         spiral = new Spiral();
+    }
+
+    public void CreateBlackhole(float size, float duration)
+    {
+        vfxAsset.SetFloat("blackHoleSize", size);
+        vfxAsset.enabled = true;
+        WaitForSeconds wait = new WaitForSeconds(duration);
+        StartCoroutine(Co_DisplayBlackhole(wait));
     }
 
     private Vector3 BlackHole(Vector3 velocity)
@@ -35,11 +41,16 @@ public class Blackhole : VectorField
         float x = (relativeZ * spiralStrenght - (relativeX * inwardPullStrenght)) / speed;
         float z = (-relativeX * spiralStrenght - (relativeZ * inwardPullStrenght)) / speed;
         Vector3 acceleration = new Vector3(x, 0, z) * Time.deltaTime;
-        acceleration -= velocity * accelerationDrag * Time.deltaTime;
+        acceleration -= accelerationDrag * Time.deltaTime * velocity;
         return acceleration;
     }
     public override Vector3 VectorFieldAcceleration(Vector3 velocity)
     {
         return BlackHole(velocity);
+    }
+    private IEnumerator Co_DisplayBlackhole(WaitForSeconds wait)
+    {
+        yield return wait;
+        Destroy(gameObject);
     }
 }

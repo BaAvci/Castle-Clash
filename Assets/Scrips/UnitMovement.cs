@@ -17,6 +17,18 @@ public class UnitMovement : MonoBehaviour
         Movement();
     }
 
+    public void ApplyEffect(float value)
+    {
+        Debug.Log(value);
+    }
+#if UNITY_EDITOR
+    public void TESTApplyEffect(float value, string description)
+    {
+        Debug.Log(description);
+        ApplyEffect(value);
+    }
+#endif
+
     private void Movement()
     {
         var calculatedSpeed = new Vector3(moveSpeed, 0, 0) * Time.deltaTime;
