@@ -17,6 +17,7 @@ public abstract class CardData
     public int MaxLVL;
     [Tooltip("Gameobject to Spawn")]
     public GameObject GameObject;
+    protected int currentLvl;
 
     public CardData(int iD, string name, string description, List<Effect> effects, int rarity, int maxLVL, GameObject gameObject)
     {
@@ -27,11 +28,21 @@ public abstract class CardData
         Rarity = rarity;
         MaxLVL = maxLVL;
         GameObject = gameObject;
+        currentLvl = 1;
     }
 
     public void Play(UnitMovement unit) { }
-    public abstract void Upgrade();
-    public virtual void Spawn(GameObject target,GameObject spawnedObject)
+    public void Upgrade()
+    {
+        if (currentLvl < MaxLVL)
+        {
+            CanUpgrade();
+            currentLvl++;
+            Debug.Log($"{this.Name} has been upgraded and is lvl: {currentLvl}");
+        }
+    }
+    protected abstract void CanUpgrade();
+    public virtual void Spawn(GameObject target, GameObject spawnedObject)
     {
         if (target.TryGetComponent<UnitMovement>(out UnitMovement unitMovement))
         {

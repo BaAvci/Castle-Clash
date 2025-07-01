@@ -30,5 +30,12 @@ public class Actor : MonoBehaviour
                 deck.PlayCard(card, testTarget);
             }
         }
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            foreach (CardData card in deckList)
+            {
+                deck.UpgradeCard(card);
+            }
+        }
     }
 }
