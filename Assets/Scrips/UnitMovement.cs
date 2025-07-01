@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class UnitMovement : MonoBehaviour
@@ -17,15 +18,30 @@ public class UnitMovement : MonoBehaviour
         Movement();
     }
 
+#if UNITY_EDITOR
+    // TODO: Create Unit Stat class and move this to there
     public void ApplyEffect(float value)
     {
         Debug.Log(value);
     }
-#if UNITY_EDITOR
-    public void TESTApplyEffect(float value, string description)
+    public void TESTApplyEffect(InstanceEffect instanceEffect)
+    {
+        Debug.Log(instanceEffect.GetDiscription());
+        ApplyEffect(instanceEffect.Value);
+    }
+    public void TESTApplyEffect(StatusEffects statusEffect)
+    {
+        ApplyEffect(statusEffect.Duration);
+        WaitForSeconds wait = new WaitForSeconds(statusEffect.Duration);
+        StartCoroutine(Co_StatusEffectApplication(wait, statusEffect.GetDiscription()));
+    }
+
+    private IEnumerator Co_StatusEffectApplication(WaitForSeconds wait, string description)
     {
         Debug.Log(description);
-        ApplyEffect(value);
+        Debug.Log("Status effect has been applied!");
+        yield return wait;
+        Debug.Log("Status effect has been removed!");
     }
 #endif
 

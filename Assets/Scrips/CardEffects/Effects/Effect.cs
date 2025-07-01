@@ -2,14 +2,14 @@
 
 public abstract class Effect
 {
-    protected float value;
-    protected float duration;
-    public string Description;
+    public float Value { get; private set; }
+    public float Duration { get; private set; }
+    protected string description;
 
     public Effect(float value, float duration)
     {
-        this.value = value;
-        this.duration = duration;
+        this.Value = value;
+        this.Duration = duration;
     }
 
     public abstract void Apply(UnitMovement target);
@@ -18,9 +18,9 @@ public abstract class Effect
     {
         if (this.GetType() != typeof(InstanceEffect))
         {
-            this.duration += duration;
+            this.Duration += duration;
         }
-        this.value += value;
+        this.Value += value;
     }
     //target.ApplyStatusEffect(value);
     //target.ApplyStatusEffect(duration);

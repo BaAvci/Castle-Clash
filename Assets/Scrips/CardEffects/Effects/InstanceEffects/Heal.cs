@@ -12,6 +12,6 @@ public class Heal : InstanceEffect
 
     public override string GetDiscription()
     {
-        return $"Heal target for {value} hp.";
+        return $"Heal target for {Value} hp.";
     }
 }

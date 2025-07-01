@@ -8,6 +8,6 @@ public class Damage : InstanceEffect
 
     public override string GetDiscription()
     {
-        return $"Deal {Mathf.Abs(value)} damage to target.";
+        return $"Deal {Mathf.Abs(Value)} damage to target.";
     }
 }
