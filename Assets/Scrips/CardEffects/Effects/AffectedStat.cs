@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public enum AffectedStat
 {
     /// <summary>
@@ -46,18 +44,4 @@ public enum AffectedStat
     /// Affects Strenght, Agility and intelligence
     /// </summary>
     AllStats = 10,
-}
-
-public abstract class StatusEffects : Effect
-{
-    public AffectedStat AffectedStat;
-    public StatusEffects(float value, float duration,AffectedStat affectedStat) : base(value, duration)
-    {
-        AffectedStat = affectedStat;
-    }
-
-    public override void Apply(UnitMovement target)
-    {
-        target.TESTApplyEffect(this);
-    }
 }

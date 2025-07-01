@@ -15,7 +15,8 @@ public class Actor : MonoBehaviour
         deckList = new List<CardData>()
         {
             //new BlackHole(testBlackHole),
-            new ExposingStrike(testBlackHole),
+            //new ExposingStrike(testBlackHole),
+            new HolyPotion(testBlackHole),
         };
         deck = GetComponent<Deck>();
         deck.AddCards(deckList);

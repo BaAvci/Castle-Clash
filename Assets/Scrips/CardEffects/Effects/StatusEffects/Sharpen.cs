@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class Sharpen : StatusEffects
+public class Sharpen : StatusEffect
 {
-    public Sharpen(float duration, AffectedStat affectedStat) : base(25, duration, affectedStat)
+    public Sharpen(float duration) : base(25, duration, AffectedStat.Damage)
     {
     }
 

@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class Weaken : StatusEffects
+public class Weaken : StatusEffect
 {
-    public Weaken(float duration, AffectedStat affectedStat) : base(25, duration, affectedStat)
+    public Weaken(float duration) : base(25, duration, AffectedStat.Damage)
     {
     }
 

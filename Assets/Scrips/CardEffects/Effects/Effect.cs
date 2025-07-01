@@ -12,7 +12,10 @@ public abstract class Effect
         this.Duration = duration;
     }
 
-    public abstract void Apply(UnitMovement target);
+    public void Apply(UnitMovement target)
+    {
+        target.TESTApplyEffect(this);
+    }
     public abstract string GetDiscription();
     public void UpdateValues(float value, float duration)
     {

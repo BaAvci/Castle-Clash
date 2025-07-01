@@ -24,16 +24,41 @@ public class UnitMovement : MonoBehaviour
     {
         Debug.Log(value);
     }
-    public void TESTApplyEffect(InstanceEffect instanceEffect)
+    private void TESTApplyInstanceEffect(InstanceEffect instanceEffect)
     {
         Debug.Log(instanceEffect.GetDiscription());
         ApplyEffect(instanceEffect.Value);
     }
-    public void TESTApplyEffect(StatusEffects statusEffect)
+    private void TESTApplyStatusEffect(StatusEffect statusEffect)
     {
         ApplyEffect(statusEffect.Duration);
         WaitForSeconds wait = new WaitForSeconds(statusEffect.Duration);
         StartCoroutine(Co_StatusEffectApplication(wait, statusEffect.GetDiscription()));
+    }
+    private void TESTApplyOverTimeEffect(OverTimeEffect overTimeEffect)
+    {
+        //ApplyEffect(overTimeEffect.Value);
+        //ApplyEffect(overTimeEffect.Duration);
+        StartCoroutine(Co_OverTimeEffectApplication(overTimeEffect));
+    }
+
+    public void TESTApplyEffect(Effect effect)
+    {
+        switch (effect)
+        {
+            case InstanceEffect instanceEffect:
+                TESTApplyInstanceEffect(instanceEffect);
+                break;
+            case StatusEffect statusEffect:
+                TESTApplyStatusEffect(statusEffect);
+                break;
+            case OverTimeEffect overTimeEffect:
+                TESTApplyOverTimeEffect(overTimeEffect);
+                break;
+            default:
+                Debug.LogError("Something with the applying has gone wrong. Do all the functions exist for all types of Effects?");
+                break;
+        }
     }
 
     private IEnumerator Co_StatusEffectApplication(WaitForSeconds wait, string description)
@@ -42,6 +67,17 @@ public class UnitMovement : MonoBehaviour
         Debug.Log("Status effect has been applied!");
         yield return wait;
         Debug.Log("Status effect has been removed!");
+    }
+
+    private IEnumerator Co_OverTimeEffectApplication(OverTimeEffect overTimeEffect)
+    {
+        WaitForSeconds wait = new WaitForSeconds(1);
+        for (int i = 0; i < overTimeEffect.Duration; i++)
+        {
+            Debug.Log($"{this.gameObject.name} has recieved {overTimeEffect.Value} damage!");
+            yield return new WaitForSeconds(1);
+        }
+        Debug.Log($"{overTimeEffect.GetType()} has been removed");
     }
 #endif
 

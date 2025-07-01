@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class Vulnerable : StatusEffects
+public class Vulnerable : StatusEffect
 {
-    public Vulnerable(float duration, AffectedStat affectedStat) : base(25, duration, affectedStat)
+    public Vulnerable(float duration) : base(25, duration, AffectedStat.HealthPoints)
     {
     }
 
