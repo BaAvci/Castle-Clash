@@ -2,7 +2,7 @@
 
 public class CardFactory
 {
-    private List<CardData> data = new();
+    private List<SOCardData> data = new();
     public CardFactory()
     {
     }

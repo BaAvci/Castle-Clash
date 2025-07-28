@@ -3,31 +3,30 @@ using UnityEngine;
 
 public class Deck : MonoBehaviour
 {
-    public List<CardData> Cards = new();
+    public List<PlayableCard> Cards = new();
 
-    public void PlayCard(CardData card, GameObject target)
+    public void PlayCard(PlayableCard card, GameObject target,Vector3 position)
     {
         var index = Cards.IndexOf(card);
-        GameObject objectToCreate = Cards[index].GameObject;
-        GameObject createdObject = Instantiate(objectToCreate, target.transform.position, Quaternion.identity);
-        Cards[index].Spawn(target, createdObject);
+        Cards[index].ApplyEffects(target);
+        Cards[index].SpawnGameObject(position);
     }
 
-    public void AddCard(CardData card)
+    public void AddCard(PlayableCard card)
     {
         Cards.Add(card);
     }
-    public void AddCards(List<CardData> cards)
+    public void AddCards(List<PlayableCard> cards)
     {
         Cards.AddRange(cards);
     }
 
-    public void RemoveCard(CardData card)
+    public void RemoveCard(PlayableCard card)
     {
         Cards.Remove(card);
     }
 
-    public void UpgradeCard(CardData card)
+    public void UpgradeCard(PlayableCard card)
     {
         var index = Cards.IndexOf(card);
         Cards[index].Upgrade();

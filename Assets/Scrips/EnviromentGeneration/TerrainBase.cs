@@ -29,6 +29,7 @@ public abstract class TerrainBase : MonoBehaviour
     protected float noiseHeight;
     protected MeshFilter _meshFilter;
     protected MeshRenderer _meshRenderer;
+    protected MeshCollider meshCollider;
     protected Vector2Int tileGridEndPosition;
     protected int meshCenter;
 
@@ -50,6 +51,10 @@ public abstract class TerrainBase : MonoBehaviour
         {
             _meshFilter = GetComponent<MeshFilter>();
         }
+        if (meshCollider == null)
+        {
+            meshCollider = GetComponent<MeshCollider>();
+        }
         this.noiseHeight = noiseHeight;
         CalculateTileGridPosition(tileGridSize);
         GenerateHeightMap(out float minHeight, out float maxHeight, randomSeed);
@@ -57,6 +62,7 @@ public abstract class TerrainBase : MonoBehaviour
         GenerateTexture(minHeight, maxHeight);
 
         GenerateMesh();
+        meshCollider.sharedMesh = _meshFilter.sharedMesh;
     }
 
     protected virtual void GenerateHeightMap(out float minHeight, out float maxHeight, int randomSeed)

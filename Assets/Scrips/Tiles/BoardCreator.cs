@@ -28,7 +28,6 @@ public class BoardCreator : MonoBehaviour
 
     public void GenerateEnviroment()
     {
-
         terrainCreator = GetComponentInChildren<TerrainSimple>();
         terrainCreator.CreateEnviroment(boardSize, terrainHeight, randomSeed);
     }

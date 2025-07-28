@@ -6,17 +6,18 @@ public class Actor : MonoBehaviour
 {
     private Deck deck;
 
-    private List<CardData> deckList;
-    [SerializeField] private GameObject testTarget;
+    private List<PlayableCard> deckList;
     [SerializeField] private GameObject testBlackHole;
+    [SerializeField] private GameObject TestCard;
+    [SerializeField] private GameObject testTarget;
 
     void Start()
     {
-        deckList = new List<CardData>()
+        deckList = new List<PlayableCard>()
         {
-            //new BlackHole(testBlackHole),
-            //new ExposingStrike(testBlackHole),
-            new HolyPotion(testBlackHole),
+            new Blackhole(),
+            //new ExposingStrike(),
+            //new HolyPotion(),
         };
         deck = GetComponent<Deck>();
         deck.AddCards(deckList);
@@ -25,16 +26,24 @@ public class Actor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.B))
+        if (Input.GetMouseButtonDown(0))
         {
-            foreach (CardData card in deckList)
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            RaycastHit hit = new RaycastHit();
+
+            if (Physics.Raycast(ray, out hit))
             {
-                deck.PlayCard(card, testTarget);
+                foreach (PlayableCard card in deckList)
+                {
+                    deck.PlayCard(card, testTarget, hit.point);
+                }
+                Debug.Log(hit.point);
             }
         }
         if (Input.GetKeyDown(KeyCode.V))
         {
-            foreach (CardData card in deckList)
+            foreach (PlayableCard card in deckList)
             {
                 deck.UpgradeCard(card);
             }

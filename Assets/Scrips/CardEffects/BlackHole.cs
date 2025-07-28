@@ -1,37 +1,38 @@
+using NUnit.Framework.Internal;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
-public class BlackHole : CardData
+public class Blackhole : PlayableCard
 {
-    public float DamageValue;
+    #region Animation
     private float diameter = 2;
     private float duration = 5;
     private float diameterUpgradeValue = 1;
     private float durationUpgradeValue = 1;
-    private float damageUpgradeValue = 5;
+    #endregion
 
-    public BlackHole(GameObject gameObject) : base(1, "Blackhole", "Creates a blackhole that pulls units to the center and deals damage", new List<Effect>()
-    {
-        new Damage(-5),
-        new Heal(5),
-    }, 3, 3, gameObject)
-    {
-    }
-
-    // TODO: Move cardCreation to ScriptableObject
     protected override void CanUpgrade()
     {
+        base.CanUpgrade();
+
         diameter += diameterUpgradeValue;
         duration += durationUpgradeValue;
-        Effects[0].UpdateValues(damageUpgradeValue, 0);
-        Effects[1].UpdateValues(damageUpgradeValue, 0);
     }
 
-    public override void Spawn(GameObject target, GameObject spawnedObject)
+    public override GameObject SpawnGameObject(Vector3 position)
     {
-        base.Spawn(target, spawnedObject);
-        Blackhole blackhole = spawnedObject.GetComponent<Blackhole>();
+        var createdGameObject = base.SpawnGameObject(position);
+        BlackholeVec blackhole = createdGameObject.GetComponent<BlackholeVec>();
         blackhole.CreateBlackhole(diameter, duration);
+        return null;
+    }
+
+    protected override async Task InitializeCardDataAsync()
+    {
+        cardData = await Addressables.LoadAssetAsync<SOCardData>("Assets/Scrips/CardEffects/BlackHole.asset").Task;
     }
 }
