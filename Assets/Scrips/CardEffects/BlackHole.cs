@@ -23,9 +23,9 @@ public class Blackhole : PlayableCard
         duration += durationUpgradeValue;
     }
 
-    public override GameObject SpawnGameObject(Vector3 position)
+    protected override GameObject SpawnGameObject(GameObject objectToSpawn, Vector3 position)
     {
-        var createdGameObject = base.SpawnGameObject(position);
+        var createdGameObject = base.SpawnGameObject(objectToSpawn, position);
         BlackholeVec blackhole = createdGameObject.GetComponent<BlackholeVec>();
         blackhole.CreateBlackhole(diameter, duration);
         return null;
@@ -36,3 +36,4 @@ public class Blackhole : PlayableCard
         cardData = await Addressables.LoadAssetAsync<SOCardData>("Assets/Scrips/CardEffects/BlackHole.asset").Task;
     }
 }
+

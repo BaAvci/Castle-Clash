@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class UnitMovement : MonoBehaviour
 {
-    public event Action<Vector2Int, TileType> ChangedTileCoordinates;
-    [SerializeField] float moveSpeed = 0.1f;
-    [SerializeField] TileType walkingElementalEffect;
+    public event Action<Vector2, TileType> ChangedTileCoordinates;
+    [SerializeField] private float moveSpeed = 0.1f;
+    [SerializeField] private TileType walkingElementalEffect;
     private bool newTilePositionDelivered = false;
     private void Start()
     {
@@ -38,7 +38,7 @@ public class UnitMovement : MonoBehaviour
         {
             if (!newTilePositionDelivered)
             {
-                ChangedTileCoordinates?.Invoke(new Vector2Int(objxPos, objyPos), walkingElementalEffect);
+                ChangedTileCoordinates?.Invoke(new Vector2(objxPos, objyPos), walkingElementalEffect);
                 newTilePositionDelivered = true;
             }
         }

@@ -6,6 +6,8 @@ using UnityEngine.ResourceManagement.ResourceProviders.Simulation;
 using UnityEngine.VFX;
 public abstract class PlayableCard
 {
+    public event Action<Vector2, TileType> CardWithTileTypePlayed;
+    public event Action<Vector2, GameObject> CardWithGameObjectSpawned;
     protected SOCardData cardData;
     [Tooltip("All effects this card can apply to others")]
     private List<IEffect> Effects;
@@ -69,7 +71,28 @@ public abstract class PlayableCard
         }
     }
 
-    public virtual void ApplyEffects(GameObject target)
+    public void PlayCard(GameObject target, Vector3 position)
+    {
+        if (Effects.Count > 0)
+        {
+            ApplyEffects(target);
+        }
+        if (cardData.Animation != null)
+        {
+            SpawnGameObject(cardData.Animation, position);
+        }
+        if (cardData.Gameobject != null)
+        {
+            SpawnGameObject(cardData.Gameobject, position);
+            CardWithGameObjectSpawned?.Invoke(new Vector2(position.x, position.z), cardData.Gameobject);
+        }
+        if (cardData.TileType != null)
+        {
+            CardWithTileTypePlayed?.Invoke(new Vector2(position.x, position.z), cardData.TileType);
+        }
+    }
+
+    protected virtual void ApplyEffects(GameObject target)
     {
         if (target.TryGetComponent<UnitStats>(out UnitStats unitStats))
         {
@@ -79,10 +102,9 @@ public abstract class PlayableCard
             }
         }
     }
-    public virtual GameObject SpawnGameObject(Vector3 position)
+    protected virtual GameObject SpawnGameObject(GameObject objectToSpawn, Vector3 position)
     {
-        return UnityEngine.MonoBehaviour.Instantiate(cardData.Animation, position, Quaternion.identity);
+        return UnityEngine.MonoBehaviour.Instantiate(objectToSpawn, position, Quaternion.identity);
     }
-
 }
 

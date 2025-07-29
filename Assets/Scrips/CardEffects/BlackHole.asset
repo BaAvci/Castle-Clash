@@ -19,8 +19,10 @@ MonoBehaviour:
   Image: {fileID: 0}
   Rarity: 2
   MaxLVL: 5
-  Animation: {fileID: 0}
+  Animation: {fileID: 3859694485481961906, guid: 2e0b1c065ee8e3340991bc2d8c0b5151, type: 3}
   Gameobject: {fileID: 0}
+  TileType: {fileID: 11400000, guid: f0d9149e0e873fe479935e72cd689b08, type: 2}
+  Range: 0
   scriptableObjects:
   - {fileID: 11400000, guid: 635eca5822641bf44a22e9fb99c3d317, type: 2}
   - {fileID: 11400000, guid: 30c1bfaffd2bb72419ae1ab48ca98961, type: 2}
