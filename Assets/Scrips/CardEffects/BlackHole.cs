@@ -22,7 +22,6 @@ public class Blackhole : PlayableCard
         diameter += diameterUpgradeValue;
         duration += durationUpgradeValue;
     }
-
     protected override GameObject SpawnGameObject(GameObject objectToSpawn, Vector3 position)
     {
         var createdGameObject = base.SpawnGameObject(objectToSpawn, position);
@@ -33,7 +32,7 @@ public class Blackhole : PlayableCard
 
     protected override async Task InitializeCardDataAsync()
     {
-        cardData = await Addressables.LoadAssetAsync<SOCardData>("Assets/Scrips/CardEffects/BlackHole.asset").Task;
+        CardData = await Addressables.LoadAssetAsync<SOCardData>("Assets/Scrips/CardEffects/BlackHole.asset").Task;
     }
 }
 

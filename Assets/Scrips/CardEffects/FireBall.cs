@@ -13,6 +13,11 @@ public class FireBall : PlayableCard
     [SerializeField]
     private int fireDuration = 5;
 
+    public override void Play(GameObject target, Vector3 position, List<PlayableCard> playableCards)
+    {
+        PlayGameObjectCard(target, position);
+    }
+
     protected override void CanUpgrade()
     {
         throw new System.NotImplementedException();

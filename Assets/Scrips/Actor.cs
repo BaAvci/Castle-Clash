@@ -56,6 +56,17 @@ public class Actor : MonoBehaviour
             {
                 case 1:
                     playableCards.Add(new Blackhole());
+                    playableCards.Add(new Blackhole());
+                    playableCards.Add(new Blackhole());
+                    playableCards.Add(new Blackhole());
+                    playableCards.Add(new Blackhole());
+                    playableCards.Add(new Blackhole());
+                    playableCards.Add(new Blackhole());
+                    playableCards.Add(new Blackhole());
+                    playableCards.Add(new Blackhole());
+                    playableCards.Add(new Blackhole());
+                    playableCards.Add(new Blackhole());
+                    playableCards.Add(new Blackhole());
                     break;
                 case 2:
                     playableCards.Add(new Blackhole());

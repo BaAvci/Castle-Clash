@@ -8,12 +8,6 @@ public class Deck : MonoBehaviour
     /// </summary>
     public List<PlayableCard> Cards = new();
 
-    public void PlayCard(PlayableCard card, GameObject target, Vector3 position)
-    {
-        var index = Cards.IndexOf(card);
-        Cards[index].PlayCard(target, position);
-    }
-
     public void AddCard(PlayableCard card, TileManager tileManager)
     {
         Cards.Add(card);
