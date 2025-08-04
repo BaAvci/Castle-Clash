@@ -126,6 +126,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1177689025953968244}
+  - component: {fileID: -7402242449191698127}
   m_Layer: 0
   m_Name: BlackHole
   m_TagString: Untagged
@@ -149,3 +150,24 @@ Transform:
   - {fileID: 8599505010969590700}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-7402242449191698127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3859694485481961906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a203c03818fbc0488ebed59b770adec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vectorFieldSize: {x: 5, y: 0, z: 5}
+  vectorFieldStrength: {x: 5, y: 0, z: 3}
+  vectorfieldHeight: 10
+  foreignObject: {fileID: 8129832854406294118, guid: 426c71f8982b8d646909221c4bbf3ed2, type: 3}
+  accelerationDrag: 50
+  upDraft: 5
+  vectorFieldHeight: 10
+  inwardPullStrenght: 0
+  spiralStrenght: 0

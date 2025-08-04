@@ -37,6 +37,6 @@ public class TerrainSimple : TerrainBase
 
     private void OnValidate()
     {
-        _meshRenderer.sharedMaterial.SetFloat("_Threshold", _bottomLayer.HeighThreshold);
+        //_meshRenderer.sharedMaterial.SetFloat("_Threshold", _bottomLayer.HeighThreshold);
     }
 }

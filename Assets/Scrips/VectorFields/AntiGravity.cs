@@ -4,9 +4,9 @@ using UnityEngine.VFX;
 public class AntiGravity : VectorField
 {
 
-    protected override void Start()
+    protected override void Awake()
     {
-        base.Start();
+        base.Awake();
         diameter = (vectorFieldSize.x + vectorFieldSize.z) / 2;
         vfxAsset.SetFloat("Radius", diameter);
         vfxAsset.SetFloat("MaxHeight", diameter);

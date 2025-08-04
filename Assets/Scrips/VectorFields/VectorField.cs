@@ -27,7 +27,9 @@ public abstract class VectorField : MonoBehaviour
     protected VisualEffect vfxAsset;
     protected float diameter;
 
-    protected virtual void Start()
+    [SerializeField] private bool drawGizmo;
+
+    protected virtual void Awake()
     {
         vfxAsset = transform.GetComponentInChildren<VisualEffect>();
 
@@ -62,7 +64,10 @@ public abstract class VectorField : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawCube(transform.position, vectorFieldSize * 2);
+        if (drawGizmo)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawCube(transform.position, vectorFieldSize * 2);
+        }
     }
 }

@@ -30,7 +30,7 @@ public class TileManager : MonoBehaviour
 
     [SerializeField] private GameObject testUnit;
 
-    void Start()
+    void Awake()
     {
         foreach (var tile in tileData)
         {
@@ -43,6 +43,25 @@ public class TileManager : MonoBehaviour
         wait = new WaitForSeconds(simulationInterval);
         testUnit.GetComponent<UnitMovement>().ChangedTileCoordinates += SetTileToTypeByInteraction;
         StartCoroutine(Co_Simulation());
+    }
+
+    public void RegisterCardEvent(PlayableCard playableCard)
+    {
+        playableCard.CardWithTileTypePlayed += SetTileToTypeByInteraction;
+        playableCard.CardWithGameObjectSpawned += RegisterUnitMovement;
+    }
+    public void UnRegisterCardEvent(PlayableCard playableCard)
+    {
+        playableCard.CardWithTileTypePlayed -= SetTileToTypeByInteraction;
+        playableCard.CardWithGameObjectSpawned -= RegisterUnitMovement;
+    }
+
+    private void RegisterUnitMovement(Vector2 position, GameObject unit)
+    {
+        if (unit.TryGetComponent(out UnitMovement unitMovement))
+        {
+            unitMovement.ChangedTileCoordinates += SetTileToTypeByInteraction;
+        }
     }
 
     public void CreateGrid(Vector2Int gridSize)
@@ -78,22 +97,22 @@ public class TileManager : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            spacePressed = true;
-        }
-        if (Input.GetMouseButtonDown((int)MouseButton.Left))
-        {
-            TestTileDataInput(tileData[6]);
-        }
-        if (Input.GetMouseButtonDown((int)MouseButton.Right))
-        {
-            TestTileDataInput(tileData[1]);
-        }
-        if (Input.GetMouseButtonDown((int)MouseButton.Middle))
-        {
-            TestTileDataInput(tileData[3]);
-        }
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    spacePressed = true;
+        //}
+        //if (Input.GetMouseButtonDown((int)MouseButton.Left))
+        //{
+        //    TestTileDataInput(tileData[6]);
+        //}
+        //if (Input.GetMouseButtonDown((int)MouseButton.Right))
+        //{
+        //    TestTileDataInput(tileData[1]);
+        //}
+        //if (Input.GetMouseButtonDown((int)MouseButton.Middle))
+        //{
+        //    TestTileDataInput(tileData[3]);
+        //}
     }
 
     private void TestTileDataInput(TileData tileData)
@@ -120,8 +139,9 @@ public class TileManager : MonoBehaviour
         return IsIndexValid(new Vector2Int(x, y));
     }
 
-    private void SetTileToTypeByInteraction(Vector2Int tilePosition, TileType tileType)
+    private void SetTileToTypeByInteraction(Vector2 position, TileType tileType)
     {
+        Vector2Int tilePosition = new Vector2Int((int)position.x, (int)position.y);
         Tile tile = tileGrid[tilePosition.x, tilePosition.y];
         tileObjectPooling[tile.Current][tilePosition.x, tilePosition.y].SetActive(false);
         tileObjectPooling[tileType][tilePosition.x, tilePosition.y].SetActive(true);
