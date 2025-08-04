@@ -12,8 +12,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84c1032fb28d3054c96c6c47a1dea5d2, type: 3}
   m_Name: Test
   m_EditorClassIdentifier: 
-  strenght: 0
-  agility: 0
-  intelligence: 0
-  mainStat: 0
-  attackType: 0
+  Strenght: 10
+  Agility: 40
+  Intelligence: 10
+  MainStat: 0
+  AttackType: 0
+  UnitStats:
+    Damage: 24
+    Strenght: 10
+    MaxHealthPoints: 340
+    HealthPointRegen: 12
+    CrowdControlResistance: 10.5
+    HealingAmplification: 0.5
+    PhysicalResistance: 15
+    Agility: 40
+    Speed: 3
+    CritChance: 12
+    EvadeChance: 4
+    CritResistance: 2
+    Armor: 20
+    Intelligence: 10
+    MaxMana: 340
+    ManaRegen: 15
+    SpellAmplification: 2
+    StatusResistance: 5
+    MagicalResistance: 15
