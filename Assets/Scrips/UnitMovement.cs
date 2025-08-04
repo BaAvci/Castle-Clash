@@ -3,15 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Unit))]
 public class UnitMovement : MonoBehaviour
 {
     public event Action<Vector2, TileType> ChangedTileCoordinates;
-    [SerializeField] private float moveSpeed = 0.1f;
     [SerializeField] private TileType walkingElementalEffect;
     private bool newTilePositionDelivered = false;
+    private Unit owner;
     private void Start()
     {
         transform.position = new Vector3(0, 1, 3);
+        owner = GetComponent<Unit>();
     }
     private void Update()
     {
@@ -20,7 +22,7 @@ public class UnitMovement : MonoBehaviour
 
     private void Movement()
     {
-        var calculatedSpeed = new Vector3(moveSpeed, 0, 0) * Time.deltaTime;
+        var calculatedSpeed = new Vector3(owner.Stats.UnitStats.Speed, 0, 0) * Time.deltaTime;
         transform.Translate(calculatedSpeed);
         var xPos = Math.Round(transform.position.x);
         var yPos = Math.Round(transform.position.z);

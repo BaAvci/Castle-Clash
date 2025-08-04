@@ -5,19 +5,19 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
-public class UnitStats : MonoBehaviour
+[System.Serializable]
+public class UnitStats
 {
     // Damage is from main attribute.
-    private float damage;
+    public float Damage;
     private float currentDamage;
     #region Strenght
-    private float strenght;                 // Dictates how high the base value the following stats are for a unit
-    private float maxHealthPoints;          // The max amount of HP a unit can have
-    private float healthPointRegen;         // How many HP a unit regend per second
-    private float crowdControlResistance;   // Is a percentage value with a max value of 100
-    private float healingAmplification;     // Percentage value of how much additional healing a unit gets
-    private float physicalResistance;       // How much damage a unit resists versus physical damage
+    public float Strenght;                 // Dictates how high the base value the following stats are for a unit
+    public float MaxHealthPoints;          // The max amount of HP a unit can have
+    public float HealthPointRegen;         // How many HP a unit regend per second
+    public float CrowdControlResistance;   // Is a percentage value with a max value of 100
+    public float HealingAmplification;     // Percentage value of how much additional healing a unit gets
+    public float PhysicalResistance;       // How much damage a unit resists versus physical damage
 
     private float currentStrenght;
     private float currentHealthPoints;
@@ -28,12 +28,12 @@ public class UnitStats : MonoBehaviour
     #endregion
 
     #region Agility                         
-    private float agility;                  // Dictates how high the base value the following stats are for a unit
-    private float speed;                    // How many Tiles per seconds a Unit moves
-    private float critChance;               // Is a percentage Value that displays the chance for a critical hit
-    private float evadeChance;              // Is a percentage value with a max value of 100
-    private float critResistance;           // Is a percentage value where the unit can resist critical hits
-    private float armor;                    // How much flat damage a unit negates
+    public float Agility;                  // Dictates how high the base value the following stats are for a unit
+    public float Speed;                    // How many Tiles per seconds a Unit moves
+    public float CritChance;               // Is a percentage Value that displays the chance for a critical hit
+    public float EvadeChance;              // Is a percentage value with a max value of 100
+    public float CritResistance;           // Is a percentage value where the unit can resist critical hits
+    public float Armor;                    // How much flat damage a unit negates
 
     private float currentAgility;
     private float currentSpeed;
@@ -44,12 +44,12 @@ public class UnitStats : MonoBehaviour
     #endregion
 
     #region Intelligence
-    private float intelligence;             // Dictates how high the base value the following stats are for a unit
-    private float maxMana;                  // How much mana a Unit needs to cast it's ability.
-    private float manaRegen;                // How fast a unit gains mana per second
-    private float spellAmplification;       // How much the unit specific spell is amplified.
-    private float statusResistance;         // Is a percentage value with a max value of 100
-    private float magicalResistance;        // How much damage a unit resists versus Magical damage
+    public float Intelligence;             // Dictates how high the base value the following stats are for a unit
+    public float MaxMana;                  // How much mana a Unit needs to cast it's ability.
+    public float ManaRegen;                // How fast a unit gains mana per second
+    public float SpellAmplification;       // How much the unit specific spell is amplified.
+    public float StatusResistance;         // Is a percentage value with a max value of 100
+    public float MagicalResistance;        // How much damage a unit resists versus Magical damage
 
     private float currentIntelligence;
     private float currentMana;
@@ -62,10 +62,59 @@ public class UnitStats : MonoBehaviour
     private Dictionary<StatusEffect, float> statusEffects = new();
     private Dictionary<OverTimeEffect, float> overTimeEffects = new();
 
-    private void Start()
+    public UnitStats(float strenght, float agility, float intelligence, MainStat mainStat, AttackType attackType)
     {
-        maxHealthPoints = 200;
-        currentHealthPoints = maxHealthPoints;
+        float baseMaxValues = 120;
+        float baseResistance = 10;
+        float baseChance = 10;
+        float baseRegen = 3;
+        float baseValue = 10;
+        this.Strenght = strenght;
+        MaxHealthPoints = strenght * 22 + baseMaxValues;
+        HealthPointRegen = strenght * 0.9f + baseRegen;
+        CrowdControlResistance = strenght * 0.05f;
+        HealingAmplification = strenght * 0.05f;
+        PhysicalResistance = strenght * 0.5f + baseResistance;
+
+        this.Agility = agility;
+        Speed = (agility * 0.5f + baseValue) * 0.1f;
+        CritChance = agility * 0.3f;
+        EvadeChance = agility * 0.1f;
+        CritResistance = agility * 0.05f;
+        Armor = agility * 0.5f;
+
+
+        this.Intelligence = intelligence;
+        MaxMana = intelligence * 22 + baseMaxValues;
+        ManaRegen = intelligence * 1.2f + baseRegen;
+        SpellAmplification = intelligence * 0.2f;
+        StatusResistance = intelligence * 0.5f;
+        MagicalResistance = intelligence * 0.5f + baseResistance;
+
+        float baseDamage = 20;
+        Damage += baseDamage;
+        switch (mainStat)
+        {
+            case MainStat.Strenght:
+                Damage += strenght;
+                CrowdControlResistance += baseResistance;
+                break;
+            case MainStat.Agility:
+                Damage += agility;
+                CritChance += agility * 1.5f + baseChance;
+                EvadeChance += agility * 1.5f + baseChance;
+                CritResistance += baseResistance;
+                break;
+            case MainStat.Intelligence:
+                Damage += intelligence;
+                SpellAmplification += intelligence * 1.5f + baseMaxValues;
+                StatusResistance += intelligence * 0.5f + baseResistance;
+                break;
+        }
+        if (attackType == AttackType.Ranged)
+        {
+            Damage *= 0.8f;
+        }
     }
 
     private float ModifyStat(InstantEffect effect, float currentStatValue, float maxStatValue, AffectedStat affectedStat)
@@ -123,75 +172,75 @@ public class UnitStats : MonoBehaviour
         switch (selectedStat)
         {
             case AffectedStat.Armor:
-                currentArmor = ModifyStat(instance, currentArmor, armor, selectedStat);
+                currentArmor = ModifyStat(instance, currentArmor, Armor, selectedStat);
                 break;
             case AffectedStat.Damage:
-                currentDamage = ModifyStat(instance, currentDamage, damage, selectedStat);
+                currentDamage = ModifyStat(instance, currentDamage, Damage, selectedStat);
                 break;
             case AffectedStat.HealthPoints:
-                var valueChange = ModifyStat(instance, currentHealthPoints, maxHealthPoints, AffectedStat.HealthPoints);
+                var valueChange = ModifyStat(instance, currentHealthPoints, MaxHealthPoints, AffectedStat.HealthPoints);
                 if (instance.InstantEffects.IsPositiv)
                 {
-                    valueChange += valueChange * (healingAmplification / 100);
+                    valueChange += valueChange * (HealingAmplification / 100);
                 }
                 currentHealthPoints += valueChange;
                 break;
             case AffectedStat.Mana:
-                currentMana = ModifyStat(instance, currentMana, maxMana, selectedStat);
+                currentMana = ModifyStat(instance, currentMana, MaxMana, selectedStat);
                 break;
             case AffectedStat.HealthRegen:
-                currentHealthPointRegen = ModifyStat(instance, currentHealthPointRegen, healthPointRegen, selectedStat);
+                currentHealthPointRegen = ModifyStat(instance, currentHealthPointRegen, HealthPointRegen, selectedStat);
                 break;
             case AffectedStat.ManaRegen:
-                currentManaRegen = ModifyStat(instance, currentManaRegen, manaRegen, selectedStat);
+                currentManaRegen = ModifyStat(instance, currentManaRegen, ManaRegen, selectedStat);
                 break;
             case AffectedStat.Agility:
-                currentAgility = ModifyStat(instance, currentAgility, agility, selectedStat);
+                currentAgility = ModifyStat(instance, currentAgility, Agility, selectedStat);
                 break;
             case AffectedStat.Intelligence:
-                currentIntelligence = ModifyStat(instance, currentIntelligence, intelligence, selectedStat);
+                currentIntelligence = ModifyStat(instance, currentIntelligence, Intelligence, selectedStat);
                 break;
             case AffectedStat.Strenght:
-                currentStrenght = ModifyStat(instance, currentStrenght, strenght, selectedStat);
+                currentStrenght = ModifyStat(instance, currentStrenght, Strenght, selectedStat);
                 break;
             case AffectedStat.CrowdControlResistance:
-                currentCrowdControlResistance = ModifyStat(instance, currentCrowdControlResistance, crowdControlResistance, selectedStat);
+                currentCrowdControlResistance = ModifyStat(instance, currentCrowdControlResistance, CrowdControlResistance, selectedStat);
                 break;
             case AffectedStat.PhysicalResistance:
-                currentPhysicalResistance = ModifyStat(instance, currentPhysicalResistance, physicalResistance, selectedStat);
+                currentPhysicalResistance = ModifyStat(instance, currentPhysicalResistance, PhysicalResistance, selectedStat);
                 break;
             case AffectedStat.HealingAmplification:
-                currentHealingAmplification = ModifyStat(instance, currentHealingAmplification, healingAmplification, selectedStat);
+                currentHealingAmplification = ModifyStat(instance, currentHealingAmplification, HealingAmplification, selectedStat);
                 break;
             case AffectedStat.Speed:
-                currentSpeed = ModifyStat(instance, currentSpeed, speed, selectedStat);
+                currentSpeed = ModifyStat(instance, currentSpeed, Speed, selectedStat);
                 break;
             case AffectedStat.CritChance:
-                currentCritChance = ModifyStat(instance, currentCritChance, critChance, selectedStat);
+                currentCritChance = ModifyStat(instance, currentCritChance, CritChance, selectedStat);
                 break;
             case AffectedStat.EvadeChance:
-                currentEvadeChance = ModifyStat(instance, currentEvadeChance, evadeChance, selectedStat);
+                currentEvadeChance = ModifyStat(instance, currentEvadeChance, EvadeChance, selectedStat);
                 break;
             case AffectedStat.CritResistance:
-                currentCritChance = ModifyStat(instance, currentCritResistance, critResistance, selectedStat);
+                currentCritChance = ModifyStat(instance, currentCritResistance, CritResistance, selectedStat);
                 break;
             case AffectedStat.StatusResistance:
-                currentStatusResistance = ModifyStat(instance, currentStatusResistance, statusResistance, selectedStat);
+                currentStatusResistance = ModifyStat(instance, currentStatusResistance, StatusResistance, selectedStat);
                 break;
             case AffectedStat.MagicalResistance:
-                currentMagicalResistance = ModifyStat(instance, currentMagicalResistance, magicalResistance, selectedStat);
+                currentMagicalResistance = ModifyStat(instance, currentMagicalResistance, MagicalResistance, selectedStat);
                 break;
             case AffectedStat.SpellAmplification:
-                currentSpellAmplification = ModifyStat(instance, currentSpellAmplification, spellAmplification, selectedStat);
+                currentSpellAmplification = ModifyStat(instance, currentSpellAmplification, SpellAmplification, selectedStat);
                 //Special cases following
                 break;
             case AffectedStat.Regen:
-                currentDamage = ModifyStat(instance, currentAgility, damage, selectedStat);
+                currentDamage = ModifyStat(instance, currentAgility, Damage, selectedStat);
                 break;
             case AffectedStat.BaseStats:
                 break;
             case AffectedStat.AllStats:
-                currentDamage = ModifyStat(instance, currentDamage, damage, selectedStat);
+                currentDamage = ModifyStat(instance, currentDamage, Damage, selectedStat);
                 break;
             case AffectedStat.Resistance:
                 break;
@@ -216,7 +265,7 @@ public class UnitStats : MonoBehaviour
         }
         else
         {
-            StartCoroutine(Co_ApplyEffect(statusEffect));
+            Unit.Instance.StartCoroutine(Co_ApplyEffect(statusEffect));
         }
     }
 
@@ -234,7 +283,7 @@ public class UnitStats : MonoBehaviour
         }
         else
         {
-            StartCoroutine(Co_OverTimeEffectApplication(overTimeEffect));
+            Unit.Instance.StartCoroutine(Co_OverTimeEffectApplication(overTimeEffect));
         }
     }
 

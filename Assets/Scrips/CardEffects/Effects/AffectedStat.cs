@@ -1,5 +1,17 @@
 using System.Runtime.CompilerServices;
 
+public enum AttackType
+{
+    Ranged = 0,
+    Meele = 1,
+}
+public enum MainStat
+{
+    Strenght = 0,
+    Agility = 1,
+    Intelligence = 2,
+}
+
 public enum AffectedStat
 {
     /// <summary>

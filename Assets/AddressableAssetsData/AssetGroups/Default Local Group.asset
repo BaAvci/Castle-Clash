@@ -16,7 +16,7 @@ MonoBehaviour:
   m_GUID: fc05fad4f43b9ef418b9b4d2dd6a004e
   m_SerializeEntries:
   - m_GUID: 2da58228756728c44a4ffb5d306becfb
-    m_Address: Assets/Scrips/CardEffects/BlackHole.asset
+    m_Address: Assets/Scrips/CardEffects/Blackhole.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
