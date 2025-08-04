@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Test
   m_EditorClassIdentifier: 
   Strenght: 10
-  Agility: 40
+  Agility: 10
   Intelligence: 10
   MainStat: 0
   AttackType: 0
@@ -25,12 +25,12 @@ MonoBehaviour:
     CrowdControlResistance: 10.5
     HealingAmplification: 0.5
     PhysicalResistance: 15
-    Agility: 40
-    Speed: 3
-    CritChance: 12
-    EvadeChance: 4
-    CritResistance: 2
-    Armor: 20
+    Agility: 10
+    Speed: 1.5
+    CritChance: 3
+    EvadeChance: 1
+    CritResistance: 0.5
+    Armor: 5
     Intelligence: 10
     MaxMana: 340
     ManaRegen: 15
