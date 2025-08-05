@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84c1032fb28d3054c96c6c47a1dea5d2, type: 3}
+  m_Name: Test
+  m_EditorClassIdentifier: 
+  Strenght: 10
+  Agility: 10
+  Intelligence: 10
+  MainStat: 0
+  AttackType: 0
+  AttackRange: 4
+  UnitStats:
+    Damage: 24
+    Strenght: 10
+    MaxHealthPoints: 340
+    HealthPointRegen: 12
+    CrowdControlResistance: 10.5
+    HealingAmplification: 0.5
+    PhysicalResistance: 15
+    Agility: 10
+    Speed: 1.5
+    CritChance: 3
+    EvadeChance: 1
+    CritResistance: 0.5
+    Armor: 5
+    Intelligence: 10
+    MaxMana: 340
+    ManaRegen: 15
+    SpellAmplification: 2
+    StatusResistance: 5
+    MagicalResistance: 15

@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b313707ff9dd1934f9d63a95af4a988a, type: 3}
-  m_Name: BlackHole
+  m_Name: Blackhole
   m_EditorClassIdentifier: 
   ID: 0
-  Name: Black Hole
+  Name: Blackhole
   Description: Creates a Blackhole that deals damage and moves units in Radius towards
     it's center
   Image: {fileID: 0}
