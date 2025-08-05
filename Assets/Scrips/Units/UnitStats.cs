@@ -10,7 +10,10 @@ public class UnitStats
 {
     // Damage is from main attribute.
     public float Damage;
-    private float currentDamage;
+    public int AttackRange;
+    public AttackType AttackType;
+    public MainStat MainStat;
+    public float CurrentDamage { get; private set; }
     #region Strenght
     public float Strenght;                 // Dictates how high the base value the following stats are for a unit
     public float MaxHealthPoints;          // The max amount of HP a unit can have
@@ -32,14 +35,14 @@ public class UnitStats
     public float Speed;                    // How many Tiles per seconds a Unit moves
     public float CritChance;               // Is a percentage Value that displays the chance for a critical hit
     public float EvadeChance;              // Is a percentage value with a max value of 100
-    public float CritResistance;           // Is a percentage value where the unit can resist critical hits
+    public float AttackSpeed;           // Is a percentage value where the unit can resist critical hits
     public float Armor;                    // How much flat damage a unit negates
 
     private float currentAgility;
     private float currentSpeed;
     private float currentCritChance;
     private float currentEvadeChance;
-    private float currentCritResistance;
+    private float currentAttackSpeed;
     private float currentArmor;
     #endregion
 
@@ -62,34 +65,71 @@ public class UnitStats
     private Dictionary<StatusEffect, float> statusEffects = new();
     private Dictionary<OverTimeEffect, float> overTimeEffects = new();
 
-    public UnitStats(float strenght, float agility, float intelligence, MainStat mainStat, AttackType attackType)
+    private Unit owner;
+
+    public UnitStats(float strenght, float agility, float intelligence, MainStat mainStat, AttackType attackType, int attackRange, Unit owner)
     {
+        this.owner = owner;
+        SetStats(strenght, agility, intelligence, mainStat, attackType, attackRange);
+    }
+    public UnitStats(float strenght, float agility, float intelligence, MainStat mainStat, AttackType attackType, int attackRange)
+    {
+        SetStats(strenght, agility, intelligence, mainStat, attackType, attackRange);
+    }
+
+    private void SetStats(float strenght, float agility, float intelligence, MainStat mainStat, AttackType attackType, int attackRange)
+    {
+        MainStat = mainStat;
+        AttackType = attackType;
+        AttackRange = attackRange;
+
         float baseMaxValues = 120;
         float baseResistance = 10;
         float baseChance = 10;
         float baseRegen = 3;
         float baseValue = 10;
-        this.Strenght = strenght;
+        Strenght = strenght;
         MaxHealthPoints = strenght * 22 + baseMaxValues;
         HealthPointRegen = strenght * 0.9f + baseRegen;
         CrowdControlResistance = strenght * 0.05f;
         HealingAmplification = strenght * 0.05f;
         PhysicalResistance = strenght * 0.5f + baseResistance;
 
-        this.Agility = agility;
+        currentStrenght = Strenght;
+        currentHealthPoints = MaxHealthPoints;
+        currentHealthPointRegen = HealthPointRegen;
+        currentCrowdControlResistance = CrowdControlResistance;
+        currentHealingAmplification = HealingAmplification;
+        currentPhysicalResistance = PhysicalResistance;
+
+        Agility = agility;
         Speed = (agility * 0.5f + baseValue) * 0.1f;
         CritChance = agility * 0.3f;
         EvadeChance = agility * 0.1f;
-        CritResistance = agility * 0.05f;
+        float baseAttackSpeed = 1;
+        AttackSpeed = baseAttackSpeed - (((int)(agility / 6)) * 0.1f);
         Armor = agility * 0.5f;
 
+        currentAgility = Agility;
+        currentSpeed = Speed;
+        currentCritChance = CritChance;
+        currentEvadeChance = EvadeChance;
+        currentAttackSpeed = AttackSpeed;
+        currentArmor = Armor;
 
-        this.Intelligence = intelligence;
+        Intelligence = intelligence;
         MaxMana = intelligence * 22 + baseMaxValues;
         ManaRegen = intelligence * 1.2f + baseRegen;
         SpellAmplification = intelligence * 0.2f;
         StatusResistance = intelligence * 0.5f;
         MagicalResistance = intelligence * 0.5f + baseResistance;
+
+        currentIntelligence = intelligence;
+        currentMana = MaxMana;
+        currentManaRegen = ManaRegen;
+        currentSpellAmplification = SpellAmplification;
+        currentStatusResistance = StatusResistance;
+        currentMagicalResistance = MagicalResistance;
 
         float baseDamage = 20;
         Damage += baseDamage;
@@ -103,7 +143,7 @@ public class UnitStats
                 Damage += agility;
                 CritChance += agility * 1.5f + baseChance;
                 EvadeChance += agility * 1.5f + baseChance;
-                CritResistance += baseResistance;
+                AttackSpeed += baseResistance;
                 break;
             case MainStat.Intelligence:
                 Damage += intelligence;
@@ -115,6 +155,7 @@ public class UnitStats
         {
             Damage *= 0.8f;
         }
+        CurrentDamage = Damage;
     }
 
     private float ModifyStat(InstantEffect effect, float currentStatValue, float maxStatValue, AffectedStat affectedStat)
@@ -175,7 +216,7 @@ public class UnitStats
                 currentArmor = ModifyStat(instance, currentArmor, Armor, selectedStat);
                 break;
             case AffectedStat.Damage:
-                currentDamage = ModifyStat(instance, currentDamage, Damage, selectedStat);
+                CurrentDamage = ModifyStat(instance, CurrentDamage, Damage, selectedStat);
                 break;
             case AffectedStat.HealthPoints:
                 var valueChange = ModifyStat(instance, currentHealthPoints, MaxHealthPoints, AffectedStat.HealthPoints);
@@ -222,7 +263,7 @@ public class UnitStats
                 currentEvadeChance = ModifyStat(instance, currentEvadeChance, EvadeChance, selectedStat);
                 break;
             case AffectedStat.CritResistance:
-                currentCritChance = ModifyStat(instance, currentCritResistance, CritResistance, selectedStat);
+                currentCritChance = ModifyStat(instance, currentAttackSpeed, AttackSpeed, selectedStat);
                 break;
             case AffectedStat.StatusResistance:
                 currentStatusResistance = ModifyStat(instance, currentStatusResistance, StatusResistance, selectedStat);
@@ -235,12 +276,12 @@ public class UnitStats
                 //Special cases following
                 break;
             case AffectedStat.Regen:
-                currentDamage = ModifyStat(instance, currentAgility, Damage, selectedStat);
+                CurrentDamage = ModifyStat(instance, currentAgility, Damage, selectedStat);
                 break;
             case AffectedStat.BaseStats:
                 break;
             case AffectedStat.AllStats:
-                currentDamage = ModifyStat(instance, currentDamage, Damage, selectedStat);
+                CurrentDamage = ModifyStat(instance, CurrentDamage, Damage, selectedStat);
                 break;
             case AffectedStat.Resistance:
                 break;
@@ -265,7 +306,7 @@ public class UnitStats
         }
         else
         {
-            Unit.Instance.StartCoroutine(Co_ApplyEffect(statusEffect));
+            UnitMonoMule.Instance.StartCoroutine(Co_ApplyEffect(statusEffect));
         }
     }
 
@@ -283,8 +324,22 @@ public class UnitStats
         }
         else
         {
-            Unit.Instance.StartCoroutine(Co_OverTimeEffectApplication(overTimeEffect));
+            UnitMonoMule.Instance.StartCoroutine(Co_OverTimeEffectApplication(overTimeEffect));
         }
+    }
+
+    public bool RecieveDamage(float incomingDamage)
+    {
+        float calculatedPhysicalResistance = incomingDamage * (currentPhysicalResistance * 0.01f);
+        float resultingDamage = Mathf.Abs(incomingDamage - calculatedPhysicalResistance - currentArmor);
+        currentHealthPoints -= resultingDamage;
+        if (currentHealthPoints <= 0)
+        {
+            owner.gameObject.SetActive(false);
+            return true;
+        }
+        Debug.Log(currentHealthPoints);
+        return false;
     }
 
     private IEnumerator Co_ApplyEffect(StatusEffect statusEffect)

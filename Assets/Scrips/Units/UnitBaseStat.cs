@@ -11,10 +11,21 @@ public class UnitBaseStat : ScriptableObject
     public float Intelligence;
     public MainStat MainStat;
     public AttackType AttackType;
+    [Range(1, 4)]
+    public int AttackRange;
+
     public UnitStats UnitStats;
 
     private void OnValidate()
     {
-        UnitStats = new(Strenght, Agility, Intelligence, MainStat, AttackType);
+        if (AttackType == AttackType.Ranged && (AttackRange < 2 || AttackRange > 4))
+        {
+            AttackRange = 2;
+        }
+        if (AttackType == AttackType.Meele)
+        {
+            AttackRange = 1;
+        }
+        UnitStats = new(Strenght, Agility, Intelligence, MainStat, AttackType, AttackRange);
     }
 }

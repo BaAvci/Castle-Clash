@@ -17,6 +17,7 @@ MonoBehaviour:
   Intelligence: 10
   MainStat: 0
   AttackType: 0
+  AttackRange: 4
   UnitStats:
     Damage: 24
     Strenght: 10
