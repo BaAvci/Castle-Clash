@@ -65,6 +65,7 @@ public class UnitStats
     private Dictionary<StatusEffect, float> statusEffects = new();
     private Dictionary<OverTimeEffect, float> overTimeEffects = new();
 
+    // Used to set the Gameobject inactive after currentHealth reaches 0;
     private Unit owner;
 
     public UnitStats(float strenght, float agility, float intelligence, MainStat mainStat, AttackType attackType, int attackRange, Unit owner)

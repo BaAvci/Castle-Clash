@@ -7,6 +7,9 @@ public class ExposingStrike : PlayableCard
     #region Animation Data
 
     #endregion
+    public ExposingStrike(Actor owner) : base(owner)
+    {
+    }
 
     protected override void CanUpgrade()
     {
