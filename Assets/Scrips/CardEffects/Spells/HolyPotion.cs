@@ -7,6 +7,9 @@ using UnityEngine;
 
 public class HolyPotion : PlayableCard
 {
+    public HolyPotion(Actor owner) : base(owner)
+    {
+    }
 
     protected override Task InitializeCardDataAsync()
     {

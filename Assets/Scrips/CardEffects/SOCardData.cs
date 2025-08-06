@@ -29,9 +29,9 @@ public class SOCardData : ScriptableObject
     public float Range;
 
     [Header("Card Effects")]
-    public List<ScriptableObject> scriptableObjects = new List<ScriptableObject>();
-    public List<float> mainValues = new List<float>();
+    public List<ScriptableObject> ScriptableObjects = new List<ScriptableObject>();
+    public List<float> MainValues = new List<float>();
     public List<float> SecondValues = new List<float>();
-    public List<float> mainUpgradeValues = new List<float>();
+    public List<float> MainUpgradeValues = new List<float>();
     public List<float> SecondUpgradeValues = new List<float>();
 }

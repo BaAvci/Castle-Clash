@@ -35,11 +35,11 @@ public class Actor : MonoBehaviour
         List<PlayableCard> playableCards;
         if (isPlayer)
         {
-            playableCards = PlayerStartingDecks.CreateStartingDeck(1);
+            playableCards = PlayerStartingDecks.CreateStartingDeck(1, this);
         }
         else
         {
-            playableCards = EnemyStartingDecks.CreateStartingDeck(1);
+            playableCards = EnemyStartingDecks.CreateStartingDeck(1, this);
         }
         deck.AddCards(playableCards, tileManager);
 
@@ -49,46 +49,46 @@ public class Actor : MonoBehaviour
     #region Remove this to a seperate class / function or what ever
     private static class PlayerStartingDecks
     {
-        public static List<PlayableCard> CreateStartingDeck(int selectedDeck)
+        public static List<PlayableCard> CreateStartingDeck(int selectedDeck, Actor actor)
         {
             List<PlayableCard> playableCards = new();
             switch (selectedDeck)
             {
                 case 1:
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
+                    playableCards.Add(new DrowRanger(actor));
+                    playableCards.Add(new DrowRanger(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
                     break;
                 case 2:
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
                     break;
                 case 3:
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
                     break;
                 default:
                     break;
@@ -99,43 +99,43 @@ public class Actor : MonoBehaviour
     }
     private static class EnemyStartingDecks
     {
-        public static List<PlayableCard> CreateStartingDeck(int selectedDeck)
+        public static List<PlayableCard> CreateStartingDeck(int selectedDeck, Actor actor)
         {
             List<PlayableCard> playableCards = new();
             switch (selectedDeck)
             {
                 case 1:
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new FireBall());
-                    playableCards.Add(new FireBall());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new FireBall(actor));
+                    playableCards.Add(new FireBall(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
                     break;
                 case 2:
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
                     break;
                 case 3:
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
-                    playableCards.Add(new Blackhole());
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new Blackhole(actor));
                     break;
                 default:
                     break;

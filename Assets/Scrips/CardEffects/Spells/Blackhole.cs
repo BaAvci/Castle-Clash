@@ -13,7 +13,11 @@ public class Blackhole : PlayableCard
     private float duration = 5;
     private float diameterUpgradeValue = 1;
     private float durationUpgradeValue = 1;
+
     #endregion
+    public Blackhole(Actor owner) : base(owner)
+    {
+    }
 
     protected override void CanUpgrade()
     {
@@ -32,7 +36,9 @@ public class Blackhole : PlayableCard
 
     protected override async Task InitializeCardDataAsync()
     {
-        CardData = await Addressables.LoadAssetAsync<SOCardData>("Assets/Scrips/CardEffects/BlackHole.asset").Task;
+        SOCardData soCardData = await Addressables.LoadAssetAsync<SOCardData>("Assets/Scrips/CardEffects/Spells/Blackhole.asset").Task;
+
+        CardData = new CardData(soCardData);
     }
 }
 

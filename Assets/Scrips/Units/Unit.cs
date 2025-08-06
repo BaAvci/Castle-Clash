@@ -21,6 +21,6 @@ public class Unit : MonoBehaviour
     }
     public void Initializ(bool owner)
     {
-        this.playerOwned = owner;
+        playerOwned = owner;
     }
 }

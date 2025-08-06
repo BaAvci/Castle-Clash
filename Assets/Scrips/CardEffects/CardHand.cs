@@ -24,25 +24,31 @@ public class CardHand : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log(gameObject.name);
         for (int i = 0; i < maxHandSize; i++)
         {
             GameObject card = Instantiate(buttonPrefab, layoutGroup.transform);
-            card.GetComponent<Button>().onClick.AddListener(() => { SelectCard(i); });
+            var a = i;
+            card.GetComponent<Button>().onClick.AddListener(() => { SelectCard(a); });
             handCards.Add(card, null);
         }
+        selectedCard = -1;
     }
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0) && selectedCard > -1)
+        if (gameObject.CompareTag("Player"))
         {
-            PlayCard();
+            if (Input.GetMouseButtonDown(0) && selectedCard > -1)
+            {
+                PlayCard();
+            }
+            if (Input.GetMouseButtonDown((int)MouseButton.Right))
+            {
+                selectedCard = -1;
+            }
+            DrawCard();
         }
-        if (Input.GetMouseButtonDown((int)MouseButton.Right))
-        {
-            selectedCard = -1;
-        }
-        DrawCard();
     }
     public void PlayCard()
     {
@@ -61,6 +67,7 @@ public class CardHand : MonoBehaviour
 
             Debug.LogWarning(hit.point);
             handSize--;
+            selectedCard = -1;
         }
     }
 

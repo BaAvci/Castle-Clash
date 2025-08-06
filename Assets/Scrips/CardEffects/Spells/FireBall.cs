@@ -13,6 +13,10 @@ public class FireBall : PlayableCard
     [SerializeField]
     private int fireDuration = 5;
 
+    public FireBall(Actor owner) : base(owner)
+    {
+    }
+
     public override void Play(GameObject target, Vector3 position, List<PlayableCard> playableCards)
     {
         PlayGameObjectCard(target, position);

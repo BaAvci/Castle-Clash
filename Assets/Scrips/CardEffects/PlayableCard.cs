@@ -2,23 +2,29 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.ResourceManagement.ResourceProviders.Simulation;
-using UnityEngine.UIElements;
-using UnityEngine.VFX;
-using static UnityEngine.GraphicsBuffer;
+using static UnityEngine.UI.GridLayoutGroup;
 public abstract class PlayableCard
 {
     public event Action<Vector2, TileType> CardWithTileTypePlayed;
     public event Action<Vector2, GameObject> CardWithGameObjectSpawned;
     public CardState CardPileState;
-    public SOCardData CardData;
+    public CardData CardData;
     [Tooltip("All effects this card can apply to others")]
     private List<IEffect> effects;
     private int currentLvl;
     public bool JustCreated;
+    protected bool isPlayerOwned;
 
-    public PlayableCard()
+    public PlayableCard(Actor owner)
     {
+        if (owner.gameObject.CompareTag("Player"))
+        {
+            isPlayerOwned = true;
+        }
+        else
+        {
+            isPlayerOwned = false;
+        }
         effects = new List<IEffect>();
         AddEffects();
     }
@@ -26,27 +32,30 @@ public abstract class PlayableCard
     private async void AddEffects()
     {
         await InitializeCardDataAsync();
-        for (int i = 0; i < CardData.scriptableObjects.Count; i++)
+
+        for (int i = 0; i < CardData.ScriptableObjects.Count; i++)
         {
             IEffect effect = null;
-            if (CardData.scriptableObjects[i].GetType() == typeof(SOInstantEffects))
+            if (CardData.ScriptableObjects[i].GetType() == typeof(SOInstantEffects))
             {
-                SOInstantEffects sOEffect = CardData.scriptableObjects[i] as SOInstantEffects;
-                effect = new InstantEffect(CardData.mainValues[i], sOEffect);
+                SOInstantEffects sOEffect = CardData.ScriptableObjects[i] as SOInstantEffects;
+                effect = new InstantEffect(CardData.MainValues[i], sOEffect);
             }
-            if (CardData.scriptableObjects[i].GetType() == typeof(SOStatusEffect))
+            if (CardData.ScriptableObjects[i].GetType() == typeof(SOStatusEffect))
             {
-                SOStatusEffect sOEffect = CardData.scriptableObjects[i] as SOStatusEffect;
-                effect = new StatusEffect(CardData.mainValues[i], sOEffect);
+                SOStatusEffect sOEffect = CardData.ScriptableObjects[i] as SOStatusEffect;
+                effect = new StatusEffect(CardData.MainValues[i], sOEffect);
             }
-            if (CardData.scriptableObjects[i].GetType() == typeof(SOOverTimeEffect))
+            if (CardData.ScriptableObjects[i].GetType() == typeof(SOOverTimeEffect))
             {
-                SOOverTimeEffect sOEffect = CardData.scriptableObjects[i] as SOOverTimeEffect;
-                effect = new OverTimeEffect(CardData.mainValues[i], CardData.SecondValues[i], sOEffect);
+                SOOverTimeEffect sOEffect = CardData.ScriptableObjects[i] as SOOverTimeEffect;
+                effect = new OverTimeEffect(CardData.MainValues[i], CardData.SecondValues[i], sOEffect);
             }
             //instanceEffect.Add(effect, instantEffectUpgradeValues[i]);
             if (effect == null)
             {
+                Debug.Log(isPlayerOwned);
+                Debug.Log(CardData.Name);
                 Debug.LogError("Something wrong happend!");
             }
             effects.Add(effect);
@@ -69,7 +78,7 @@ public abstract class PlayableCard
     {
         for (int i = 0; i < effects.Count; i++)
         {
-            float upgradeMainValue = CardData.mainUpgradeValues[i];
+            float upgradeMainValue = CardData.MainUpgradeValues[i];
             float upgradeSecondValue = CardData.SecondUpgradeValues[i];
             effects[i].UpgradeValues(upgradeMainValue, upgradeSecondValue);
         }
@@ -107,7 +116,8 @@ public abstract class PlayableCard
         }
         if (CardData.Gameobject != null)
         {
-            SpawnGameObject(CardData.Gameobject, position);
+            Vector3 corectedspawnPosition = new ((int)position.x,1,(int)position.z);
+            SpawnGameObject(CardData.Gameobject, corectedspawnPosition);
             CardWithGameObjectSpawned?.Invoke(new Vector2(position.x, position.z), CardData.Gameobject);
         }
         if (CardData.TileType != null)
