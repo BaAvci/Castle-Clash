@@ -15,6 +15,5 @@ public class DrowRanger : PlayableCard
     {
         var soCardData = await Addressables.LoadAssetAsync<SOCardData>("Assets/Scrips/CardEffects/Units/DrowRanger.asset").Task;
         CardData = new CardData(soCardData);
-        CardData.Gameobject.GetComponent<Unit>().Initializ(isPlayerOwned);
     }
 }

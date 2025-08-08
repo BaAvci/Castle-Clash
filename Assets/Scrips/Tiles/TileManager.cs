@@ -24,7 +24,7 @@ public class TileManager : MonoBehaviour
     private Tile[,] tileGrid;
     private Dictionary<TileType, GameObject[,]> tileObjectPooling;
     private bool spacePressed;
-
+    public readonly float TileSizeOffset = 0.5f;
     private WaitForSeconds wait;
     private Camera camera;
 
@@ -84,7 +84,7 @@ public class TileManager : MonoBehaviour
 
     private void AddTile(TileType tileType, int x, int y)
     {
-        GameObject newTile = Instantiate(tileType.Prefab, new Vector3(x, 0, y), Quaternion.identity, this.transform);
+        GameObject newTile = Instantiate(tileType.Prefab, new Vector3(x + TileSizeOffset, 0, y), Quaternion.identity, this.transform);
         if (defaultTilePrefab != tileType.Prefab)
         {
             newTile.SetActive(false);
@@ -142,6 +142,10 @@ public class TileManager : MonoBehaviour
     private void SetTileToTypeByInteraction(Vector2 position, TileType tileType)
     {
         Vector2Int tilePosition = new Vector2Int((int)position.x, (int)position.y);
+        if (!IsIndexValid(tilePosition))
+        {
+            return;
+        }
         Tile tile = tileGrid[tilePosition.x, tilePosition.y];
         tileObjectPooling[tile.Current][tilePosition.x, tilePosition.y].SetActive(false);
         tileObjectPooling[tileType][tilePosition.x, tilePosition.y].SetActive(true);

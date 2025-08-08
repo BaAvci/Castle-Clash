@@ -339,7 +339,6 @@ public class UnitStats
             owner.gameObject.SetActive(false);
             return true;
         }
-        Debug.Log(currentHealthPoints);
         return false;
     }
 

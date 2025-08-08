@@ -94,7 +94,7 @@ public abstract class ElementalInteractionRules : Rule
                 }
                 if (x == 0 && y == 1)
                 {
-                    Debug.Log("");
+                    //Debug.Log("");
                 }
                 Vector2Int position = new(i, j);
                 int spreadControlValue;

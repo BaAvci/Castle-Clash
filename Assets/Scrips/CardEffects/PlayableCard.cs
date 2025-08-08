@@ -116,9 +116,9 @@ public abstract class PlayableCard
         }
         if (CardData.Gameobject != null)
         {
-            Vector3 corectedspawnPosition = new ((int)position.x,1,(int)position.z);
-            SpawnGameObject(CardData.Gameobject, corectedspawnPosition);
-            CardWithGameObjectSpawned?.Invoke(new Vector2(position.x, position.z), CardData.Gameobject);
+            GameObject spawnedObject = SpawnGameObject(CardData.Gameobject, position);
+            spawnedObject.GetComponent<Unit>().Initializ(isPlayerOwned);
+            CardWithGameObjectSpawned?.Invoke(new Vector2(position.x, position.z), spawnedObject);
         }
         if (CardData.TileType != null)
         {
