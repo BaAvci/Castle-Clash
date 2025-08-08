@@ -7,6 +7,10 @@ public class Actor : MonoBehaviour
 {
     private Deck deck;
     private CardHand hand;
+    public Vector2Int GridStartPos { get; private set; }
+    public Vector2Int GridMaxUnitPlayPos { get; private set; }
+    public Vector2Int GridMaxSpellPlayPos { get; private set; }
+    public TileManager TileManager { get; private set; }
     // private DefaultDeck defaultDeck; (DefaultDeck is a ScriptableObject where only a list/array of cardData exists)
 
     private void Start()
@@ -24,11 +28,20 @@ public class Actor : MonoBehaviour
         }
     }
 
-    public void Instanziate(TileManager tileManager, bool isPlayer)
+    public void Instanziate(Vector2Int gridStartPos, Vector2Int gridMaxUnitPlayPos, Vector2Int gridMaxSpellPlayPos, TileManager tileManager, bool isPlayer)
     {
-        CreateStartDeck(tileManager, isPlayer);
+        GridStartPos = gridStartPos;
+        if (gameObject.CompareTag("Enemy"))
+        {
+            gridMaxUnitPlayPos.x = gridStartPos.x - gridMaxUnitPlayPos.x;
+            gridMaxSpellPlayPos.x = gridStartPos.x - gridMaxSpellPlayPos.x;
+        }
+        GridMaxUnitPlayPos = gridMaxUnitPlayPos;
+        GridMaxSpellPlayPos = gridMaxSpellPlayPos;
+        TileManager = tileManager;
+        CreateStartDeck(isPlayer);
     }
-    private void CreateStartDeck(TileManager tileManager, bool isPlayer)
+    private void CreateStartDeck(bool isPlayer)
     {
         //foreach (PlayableCard card in DefaultDeck.Cards)
         deck = GetComponent<Deck>();
@@ -41,7 +54,7 @@ public class Actor : MonoBehaviour
         {
             playableCards = EnemyStartingDecks.CreateStartingDeck(1, this);
         }
-        deck.AddCards(playableCards, tileManager);
+        deck.AddCards(playableCards, TileManager);
 
         hand = GetComponent<CardHand>();
         hand.Initialize(deck);
@@ -106,9 +119,9 @@ public class Actor : MonoBehaviour
             {
                 case 1:
                     playableCards.Add(new Blackhole(actor));
-                    playableCards.Add(new FireBall(actor));
-                    playableCards.Add(new FireBall(actor));
                     playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new DrowRanger(actor));
+                    playableCards.Add(new DrowRanger(actor));
                     playableCards.Add(new Blackhole(actor));
                     playableCards.Add(new Blackhole(actor));
                     playableCards.Add(new Blackhole(actor));

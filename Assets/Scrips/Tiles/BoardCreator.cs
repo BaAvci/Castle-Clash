@@ -47,7 +47,7 @@ public class BoardCreator : MonoBehaviour
     }
     public void Clear()
     {
-        var a = gameObject.GetComponentInChildren<TileManager>().gameObject.GetComponentsInChildren<Transform>(true).Where(t=> t.CompareTag("Tile")).ToList();
+        var a = gameObject.GetComponentInChildren<TileManager>().gameObject.GetComponentsInChildren<Transform>(true).Where(t => t.CompareTag("Tile")).ToList();
         foreach (var transform in a)
         {
             DestroyImmediate(transform.gameObject);
@@ -61,11 +61,21 @@ public class BoardCreator : MonoBehaviour
 
     private void InstanziateActors()
     {
-        player.GetComponent<Actor>().Instanziate(tileManager,true);
-        foreach(GameObject npc in npcs)
+        CalculateCardPlayPositions(out int sectorLenght, out int spellCardsPlaySize);
+        Vector2Int gridMaxUnitPlayPos = new Vector2Int(sectorLenght, boardSize.y);
+        Vector2Int gridMaxSpellPlayPos = new Vector2Int(spellCardsPlaySize, boardSize.y);
+
+        player.GetComponent<Actor>().Instanziate(new Vector2Int(0, 0), gridMaxUnitPlayPos, gridMaxSpellPlayPos, tileManager, true);
+        foreach (GameObject npc in npcs)
         {
-            npc.GetComponent<Actor>().Instanziate(tileManager,false);
+            npc.GetComponent<Actor>().Instanziate(new Vector2Int(boardSize.x, 0), gridMaxUnitPlayPos, gridMaxSpellPlayPos, tileManager, false);
         }
     }
 
+    private void CalculateCardPlayPositions(out int sectorLenght, out int spellCardsPlaySize)
+    {
+        int maxLenght = boardSize.x;
+        sectorLenght = (maxLenght / 3);
+        spellCardsPlaySize = maxLenght - sectorLenght;
+    }
 }
