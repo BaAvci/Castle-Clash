@@ -78,11 +78,16 @@ public class AICardHand : CardHand
         bool isUnit = IsCardAUnit(playableCard);
 
         Vector3 position = GetTargetPositionOfPlayedCard();
+        List<Unit> affectedUnits = new();
 
         if (isUnit)
         {
             maxPos = owner.GridMaxUnitPlayPos;
             position = new((int)position.x + owner.TileManager.TileSizeOffset, 1, (int)position.z);
+        }
+        else
+        {
+            affectedUnits = unitManager.GetAllUnitsInRange(position, playableCard.CardData.Range);
         }
 
         if (!IsPointWithinBounds(position, startPos, maxPos))
@@ -90,7 +95,7 @@ public class AICardHand : CardHand
             return;
         }
 
-        playableCard.Play(testTarget, position, cards);
+        playableCard.Play(affectedUnits, position, cards);
 
         handCards.RemoveAt(selectedCard);
 

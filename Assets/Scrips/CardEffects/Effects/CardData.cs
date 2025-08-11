@@ -18,7 +18,7 @@ public class CardData
     public GameObject Gameobject;
     public TileType TileType;
 
-    public float Range;
+    public int Range;
 
     public List<ScriptableObject> ScriptableObjects = new List<ScriptableObject>();
     public List<float> MainValues = new List<float>();
@@ -39,8 +39,8 @@ public class CardData
         Range = cardData.Range;
         ScriptableObjects.AddRange(cardData.ScriptableObjects);
         MainValues.AddRange(cardData.MainValues);
-        SecondValues.AddRange(cardData.SecondUpgradeValues);
-        MainUpgradeValues.AddRange(cardData.MainValues);
+        SecondValues.AddRange(cardData.SecondValues);
+        MainUpgradeValues.AddRange(cardData.MainUpgradeValues);
         SecondUpgradeValues.AddRange(cardData.SecondUpgradeValues);
     }
 }

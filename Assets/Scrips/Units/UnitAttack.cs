@@ -1,21 +1,12 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-[RequireComponent(typeof(Unit))]
 public class UnitAttack : MonoBehaviour
 {
     private Unit owner;
-    [SerializeField] private int attackRange;
     public UnitStats? Target { get; private set; }
     [SerializeField] private Unit? unitTarget;
     private float attackTimer;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        owner = GetComponent<Unit>();
-        attackRange = owner.UnitStats.AttackRange;
-    }
 
     private void Update()
     {
@@ -33,6 +24,10 @@ public class UnitAttack : MonoBehaviour
         }
     }
 
+    public void Initialize(Unit owner)
+    {
+        this.owner = owner;
+    }
     public void SetTarget(Unit? unit)
     {
         if (unit == null)

@@ -17,11 +17,6 @@ public class FireBall : PlayableCard
     {
     }
 
-    public override void Play(GameObject target, Vector3 position, List<PlayableCard> playableCards)
-    {
-        PlayGameObjectCard(target, position);
-    }
-
     protected override void CanUpgrade()
     {
         throw new System.NotImplementedException();

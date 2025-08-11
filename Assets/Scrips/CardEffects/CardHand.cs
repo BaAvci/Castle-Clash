@@ -23,11 +23,13 @@ public abstract class CardHand : MonoBehaviour
     protected int selectedCard;
     protected Actor owner;
     protected float gridOffSet = 0.5f;
+    protected UnitManager unitManager;
 
     public abstract void SelectCard(int index);
 
-    public void Initialize(Deck actorDeck)
+    public void Initialize(Deck actorDeck, UnitManager unitManager)
     {
+        this.unitManager = unitManager;
         cards = actorDeck.Cards;
         foreach (PlayableCard card in cards)
         {

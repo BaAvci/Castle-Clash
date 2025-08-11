@@ -14,12 +14,13 @@ public class BoardCreator : MonoBehaviour
     [SerializeField] private Vector2Int boardSize;
     [SerializeField] private float terrainHeight = 25;
     [SerializeField] private int randomSeed = 1;
-    private TileManager tileManager;
-
     [SerializeField] private GameObject player;
     [SerializeField] private List<GameObject> npcs = new List<GameObject>();
 
+    private TileManager tileManager;
+    private UnitManager unitManager;
     private TerrainBase terrainCreator;
+
 
     private void Start()
     {
@@ -64,11 +65,12 @@ public class BoardCreator : MonoBehaviour
         CalculateCardPlayPositions(out int sectorLenght, out int spellCardsPlaySize);
         Vector2Int gridMaxUnitPlayPos = new Vector2Int(sectorLenght, boardSize.y);
         Vector2Int gridMaxSpellPlayPos = new Vector2Int(spellCardsPlaySize, boardSize.y);
-
-        player.GetComponent<Actor>().Instanziate(new Vector2Int(0, 0), gridMaxUnitPlayPos, gridMaxSpellPlayPos, tileManager, true);
+        unitManager = gameObject.GetComponent<UnitManager>();
+        player.GetComponent<Actor>().Instanziate(new Vector2Int(0, 0), gridMaxUnitPlayPos, gridMaxSpellPlayPos, tileManager,
+           unitManager, true);
         foreach (GameObject npc in npcs)
         {
-            npc.GetComponent<Actor>().Instanziate(new Vector2Int(boardSize.x, 0), gridMaxUnitPlayPos, gridMaxSpellPlayPos, tileManager, false);
+            npc.GetComponent<Actor>().Instanziate(new Vector2Int(boardSize.x, 0), gridMaxUnitPlayPos, gridMaxSpellPlayPos, tileManager, unitManager, false);
         }
     }
 

@@ -20,10 +20,10 @@ MonoBehaviour:
   MaxLVL: 1
   Animation: {fileID: 0}
   Gameobject: {fileID: 3653126228791784265, guid: 78a4ef3f24d519844ae772097ba47c47, type: 3}
-  TileType: {fileID: 0}
+  TileType: {fileID: 11400000, guid: dac185df8a7fee84aa3706e70995eb48, type: 2}
   Range: 0
-  scriptableObjects: []
-  mainValues: []
+  ScriptableObjects: []
+  MainValues: []
   SecondValues: []
-  mainUpgradeValues: []
+  MainUpgradeValues: []
   SecondUpgradeValues: []
