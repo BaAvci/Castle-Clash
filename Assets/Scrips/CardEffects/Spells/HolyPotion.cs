@@ -15,8 +15,4 @@ public class HolyPotion : PlayableCard
     {
         throw new NotImplementedException();
     }
-    public override void Play(GameObject target, Vector3 position, List<PlayableCard> playableCards)
-    {
-        PlayGameObjectCard(target, position);
-    }
 }

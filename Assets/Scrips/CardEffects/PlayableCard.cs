@@ -5,8 +5,8 @@ using UnityEngine;
 using static UnityEngine.UI.GridLayoutGroup;
 public abstract class PlayableCard
 {
-    public event Action<Vector2, TileType> CardWithTileTypePlayed;
-    public event Action<Vector2, GameObject> CardWithGameObjectSpawned;
+    public event Action<TileType, Vector2> CardWithTileTypePlayed;
+    public event Action<Vector3, GameObject> CardWithGameObjectSpawned;
     public CardState CardPileState;
     public CardData CardData;
     [Tooltip("All effects this card can apply to others")]
@@ -99,16 +99,18 @@ public abstract class PlayableCard
     {
         CardPileState = CardState.DrawPile;
     }
-    public virtual void Play(GameObject target, Vector3 position, List<PlayableCard> playableCards)
+
+    public virtual void Play(List<Unit> targets, Vector3 position, List<PlayableCard> playableCards)
     {
         CardPileState = CardState.DiscardPile;
-        PlayGameObjectCard(target, position);
+
+        PlayGameObjectCard(targets, position);
     }
-    protected void PlayGameObjectCard(GameObject target, Vector3 position)
+    protected void PlayGameObjectCard(List<Unit> targets, Vector3 position)
     {
         if (effects.Count > 0)
         {
-            ApplyEffects(target);
+            ApplyEffects(targets);
         }
         if (CardData.Animation != null)
         {
@@ -117,12 +119,12 @@ public abstract class PlayableCard
         if (CardData.Gameobject != null)
         {
             GameObject spawnedObject = SpawnGameObject(CardData.Gameobject, position);
-            spawnedObject.GetComponent<Unit>().Initializ(isPlayerOwned);
-            CardWithGameObjectSpawned?.Invoke(new Vector2(position.x, position.z), spawnedObject);
+            spawnedObject.GetComponent<Unit>().Initialize(isPlayerOwned, CardData.TileType);
+            CardWithGameObjectSpawned?.Invoke(position, spawnedObject);
         }
         if (CardData.TileType != null)
         {
-            CardWithTileTypePlayed?.Invoke(new Vector2(position.x, position.z), CardData.TileType);
+            CardWithTileTypePlayed?.Invoke(CardData.TileType, new Vector2(position.x, position.z));
         }
     }
     public void ResetCardState()
@@ -130,16 +132,17 @@ public abstract class PlayableCard
         CardPileState = CardState.DrawPile;
         JustCreated = false;
     }
-    protected virtual void ApplyEffects(GameObject target)
+    protected virtual void ApplyEffects(List<Unit> targets)
     {
-        if (target.TryGetComponent<UnitStats>(out UnitStats unitStats))
+        for (int i = 0; i < targets.Count; i++)
         {
-            foreach (var effect in effects)
+            for (int j = 0; j < effects.Count; j++)
             {
-                effect.ApplyEffect(unitStats);
+                effects[j].ApplyEffect(targets[i].UnitStats);
             }
         }
     }
+
     protected virtual GameObject SpawnGameObject(GameObject objectToSpawn, Vector3 position)
     {
         return UnityEngine.MonoBehaviour.Instantiate(objectToSpawn, position, Quaternion.identity);

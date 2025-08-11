@@ -21,25 +21,15 @@ MonoBehaviour:
   MaxLVL: 5
   Animation: {fileID: 3859694485481961906, guid: 2e0b1c065ee8e3340991bc2d8c0b5151, type: 3}
   Gameobject: {fileID: 0}
-  TileType: {fileID: 11400000, guid: f0d9149e0e873fe479935e72cd689b08, type: 2}
-  Range: 0
-  scriptableObjects:
-  - {fileID: 11400000, guid: 635eca5822641bf44a22e9fb99c3d317, type: 2}
-  - {fileID: 11400000, guid: 30c1bfaffd2bb72419ae1ab48ca98961, type: 2}
-  - {fileID: 11400000, guid: b54c0829f5b958a4ba65c123435cb8a5, type: 2}
-  mainValues:
-  - 10
-  - 20
-  - 6
+  TileType: {fileID: 0}
+  Range: 2
+  ScriptableObjects:
+  - {fileID: 11400000, guid: 7508281617d5dda40909a2f704e424da, type: 2}
+  MainValues:
+  - 5
   SecondValues:
   - 0
-  - 5
+  MainUpgradeValues:
   - 0
-  mainUpgradeValues:
-  - 10
-  - 2
-  - 2
   SecondUpgradeValues:
-  - 0
-  - 0.5
   - 0

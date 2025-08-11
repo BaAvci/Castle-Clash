@@ -26,7 +26,7 @@ public class SOCardData : ScriptableObject
     [Tooltip("Sets the tiles in range to this tiletype")]
     public TileType TileType;
 
-    public float Range;
+    public int Range;
 
     [Header("Card Effects")]
     public List<ScriptableObject> ScriptableObjects = new List<ScriptableObject>();

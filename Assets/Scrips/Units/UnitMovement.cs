@@ -3,20 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Unit))]
 public class UnitMovement : MonoBehaviour
 {
-    public event Action<Vector2, TileType> ChangedTileCoordinates;
-    [SerializeField] private TileType walkingElementalEffect;
-    private bool newTilePositionDelivered = false;
+    public event Action<TileType, Vector2> UnitTileEffectChange;
+    public event Func<Unit, Vector3, bool> UnitMovedTile;
+    private TileType walkingElementalEffect;
     private Unit owner;
     private UnitAttack unitAttack;
-    private void Start()
-    {
-        //transform.position = new Vector3(0, 1, 3);
-        owner = GetComponent<Unit>();
-        unitAttack = GetComponent<UnitAttack>();
-    }
+    private bool? constantMovementDataNeeded;
+    private int lastPosition = -1; // x position
     private void Update()
     {
         if (unitAttack.Target == null)
@@ -33,29 +28,27 @@ public class UnitMovement : MonoBehaviour
             calculatedSpeed *= -1;
         }
         transform.Translate(calculatedSpeed);
-        var xPos = Math.Round(transform.position.x);
-        var yPos = Math.Round(transform.position.z);
-        var objxPos = (int)transform.position.x;
-        var objyPos = (int)transform.position.z;
-        if (walkingElementalEffect != null)
+        int xPos = (int)transform.position.x;
+        if (xPos != lastPosition || constantMovementDataNeeded == true)
         {
-            ApplyEffectOnTile(xPos, yPos, objxPos, objyPos);
+            lastPosition = xPos;
+            UpdatePosition();
         }
     }
 
-    private void ApplyEffectOnTile(double xPos, double yPos, int objxPos, int objyPos)
+    public void Initialize(Unit owner, UnitAttack unitAttack, TileType tileType)
     {
-        if (xPos > objxPos || yPos > objyPos)
+        this.owner = owner;
+        this.unitAttack = unitAttack;
+        walkingElementalEffect = tileType;
+    }
+
+    private void UpdatePosition()
+    {
+        if (walkingElementalEffect != null)
         {
-            if (!newTilePositionDelivered)
-            {
-                ChangedTileCoordinates?.Invoke(new Vector2(objxPos, objyPos), walkingElementalEffect);
-                newTilePositionDelivered = true;
-            }
+            UnitTileEffectChange?.Invoke(walkingElementalEffect, transform.position);
         }
-        else
-        {
-            newTilePositionDelivered = false;
-        }
+        constantMovementDataNeeded = UnitMovedTile?.Invoke(owner, transform.position);
     }
 }

@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ public class UnitStats
     public float PhysicalResistance;       // How much damage a unit resists versus physical damage
 
     private float currentStrenght;
-    private float currentHealthPoints;
+    [SerializeField] private float currentHealthPoints;
     private float currentHealthPointRegen;
     private float currentCrowdControlResistance;
     private float currentHealingAmplification;
@@ -192,13 +193,16 @@ public class UnitStats
 #endif
 
         changeValue = CalculateChangeValueWithStatusEffects(changeValue, affectedStat, effect.InstantEffects.IsPositiv);
-        currentStatValue += changeValue;
 
 #if UNITY_EDITOR
         Debug.Log($"Modified changevalue is {changeValue}.");
         Debug.Log($"Modified currentStatValue is {currentStatValue}.");
 #endif
-        return currentStatValue;
+        if (changeValue + currentStatValue >= maxStatValue)
+        {
+            return maxStatValue - currentStatValue;
+        }
+        return changeValue;
     }
 
     public void ApplyInstanceModification(InstantEffect instance)
@@ -214,10 +218,10 @@ public class UnitStats
         switch (selectedStat)
         {
             case AffectedStat.Armor:
-                currentArmor = ModifyStat(instance, currentArmor, Armor, selectedStat);
+                currentArmor += ModifyStat(instance, currentArmor, Armor, selectedStat);
                 break;
             case AffectedStat.Damage:
-                CurrentDamage = ModifyStat(instance, CurrentDamage, Damage, selectedStat);
+                CurrentDamage += ModifyStat(instance, CurrentDamage, Damage, selectedStat);
                 break;
             case AffectedStat.HealthPoints:
                 var valueChange = ModifyStat(instance, currentHealthPoints, MaxHealthPoints, AffectedStat.HealthPoints);
@@ -228,61 +232,61 @@ public class UnitStats
                 currentHealthPoints += valueChange;
                 break;
             case AffectedStat.Mana:
-                currentMana = ModifyStat(instance, currentMana, MaxMana, selectedStat);
+                currentMana += ModifyStat(instance, currentMana, MaxMana, selectedStat);
                 break;
             case AffectedStat.HealthRegen:
-                currentHealthPointRegen = ModifyStat(instance, currentHealthPointRegen, HealthPointRegen, selectedStat);
+                currentHealthPointRegen += ModifyStat(instance, currentHealthPointRegen, HealthPointRegen, selectedStat);
                 break;
             case AffectedStat.ManaRegen:
-                currentManaRegen = ModifyStat(instance, currentManaRegen, ManaRegen, selectedStat);
+                currentManaRegen += ModifyStat(instance, currentManaRegen, ManaRegen, selectedStat);
                 break;
             case AffectedStat.Agility:
-                currentAgility = ModifyStat(instance, currentAgility, Agility, selectedStat);
+                currentAgility += ModifyStat(instance, currentAgility, Agility, selectedStat);
                 break;
             case AffectedStat.Intelligence:
-                currentIntelligence = ModifyStat(instance, currentIntelligence, Intelligence, selectedStat);
+                currentIntelligence += ModifyStat(instance, currentIntelligence, Intelligence, selectedStat);
                 break;
             case AffectedStat.Strenght:
-                currentStrenght = ModifyStat(instance, currentStrenght, Strenght, selectedStat);
+                currentStrenght += ModifyStat(instance, currentStrenght, Strenght, selectedStat);
                 break;
             case AffectedStat.CrowdControlResistance:
-                currentCrowdControlResistance = ModifyStat(instance, currentCrowdControlResistance, CrowdControlResistance, selectedStat);
+                currentCrowdControlResistance += ModifyStat(instance, currentCrowdControlResistance, CrowdControlResistance, selectedStat);
                 break;
             case AffectedStat.PhysicalResistance:
-                currentPhysicalResistance = ModifyStat(instance, currentPhysicalResistance, PhysicalResistance, selectedStat);
+                currentPhysicalResistance += ModifyStat(instance, currentPhysicalResistance, PhysicalResistance, selectedStat);
                 break;
             case AffectedStat.HealingAmplification:
-                currentHealingAmplification = ModifyStat(instance, currentHealingAmplification, HealingAmplification, selectedStat);
+                currentHealingAmplification += ModifyStat(instance, currentHealingAmplification, HealingAmplification, selectedStat);
                 break;
             case AffectedStat.Speed:
-                currentSpeed = ModifyStat(instance, currentSpeed, Speed, selectedStat);
+                currentSpeed += ModifyStat(instance, currentSpeed, Speed, selectedStat);
                 break;
             case AffectedStat.CritChance:
-                currentCritChance = ModifyStat(instance, currentCritChance, CritChance, selectedStat);
+                currentCritChance += ModifyStat(instance, currentCritChance, CritChance, selectedStat);
                 break;
             case AffectedStat.EvadeChance:
-                currentEvadeChance = ModifyStat(instance, currentEvadeChance, EvadeChance, selectedStat);
+                currentEvadeChance += ModifyStat(instance, currentEvadeChance, EvadeChance, selectedStat);
                 break;
             case AffectedStat.CritResistance:
-                currentCritChance = ModifyStat(instance, currentAttackSpeed, AttackSpeed, selectedStat);
+                currentCritChance += ModifyStat(instance, currentAttackSpeed, AttackSpeed, selectedStat);
                 break;
             case AffectedStat.StatusResistance:
-                currentStatusResistance = ModifyStat(instance, currentStatusResistance, StatusResistance, selectedStat);
+                currentStatusResistance += ModifyStat(instance, currentStatusResistance, StatusResistance, selectedStat);
                 break;
             case AffectedStat.MagicalResistance:
-                currentMagicalResistance = ModifyStat(instance, currentMagicalResistance, MagicalResistance, selectedStat);
+                currentMagicalResistance += ModifyStat(instance, currentMagicalResistance, MagicalResistance, selectedStat);
                 break;
             case AffectedStat.SpellAmplification:
-                currentSpellAmplification = ModifyStat(instance, currentSpellAmplification, SpellAmplification, selectedStat);
+                currentSpellAmplification += ModifyStat(instance, currentSpellAmplification, SpellAmplification, selectedStat);
                 //Special cases following
                 break;
             case AffectedStat.Regen:
-                CurrentDamage = ModifyStat(instance, currentAgility, Damage, selectedStat);
+                CurrentDamage += ModifyStat(instance, currentAgility, Damage, selectedStat);
                 break;
             case AffectedStat.BaseStats:
                 break;
             case AffectedStat.AllStats:
-                CurrentDamage = ModifyStat(instance, CurrentDamage, Damage, selectedStat);
+                CurrentDamage += ModifyStat(instance, CurrentDamage, Damage, selectedStat);
                 break;
             case AffectedStat.Resistance:
                 break;

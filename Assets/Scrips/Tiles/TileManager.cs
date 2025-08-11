@@ -41,7 +41,7 @@ public class TileManager : MonoBehaviour
 
         camera = Camera.main;
         wait = new WaitForSeconds(simulationInterval);
-        testUnit.GetComponent<UnitMovement>().ChangedTileCoordinates += SetTileToTypeByInteraction;
+        testUnit.GetComponent<UnitMovement>().UnitTileEffectChange += SetTileToTypeByInteraction;
         StartCoroutine(Co_Simulation());
     }
 
@@ -56,11 +56,11 @@ public class TileManager : MonoBehaviour
         playableCard.CardWithGameObjectSpawned -= RegisterUnitMovement;
     }
 
-    private void RegisterUnitMovement(Vector2 position, GameObject unit)
+    private void RegisterUnitMovement(Vector3 position, GameObject unit)
     {
         if (unit.TryGetComponent(out UnitMovement unitMovement))
         {
-            unitMovement.ChangedTileCoordinates += SetTileToTypeByInteraction;
+            unitMovement.UnitTileEffectChange += SetTileToTypeByInteraction;
         }
     }
 
@@ -124,7 +124,7 @@ public class TileManager : MonoBehaviour
             if (conttoller != null)
             {
                 Vector2Int pos = new(Mathf.RoundToInt(hit.point.x), Mathf.RoundToInt(hit.point.z));
-                conttoller.SetTileToTypeByInteraction(pos, tileData.TileType);
+                conttoller.SetTileToTypeByInteraction(tileData.TileType, pos);
             }
         }
     }
@@ -139,7 +139,7 @@ public class TileManager : MonoBehaviour
         return IsIndexValid(new Vector2Int(x, y));
     }
 
-    private void SetTileToTypeByInteraction(Vector2 position, TileType tileType)
+    private void SetTileToTypeByInteraction(TileType tileType, Vector2 position)
     {
         Vector2Int tilePosition = new Vector2Int((int)position.x, (int)position.y);
         if (!IsIndexValid(tilePosition))
