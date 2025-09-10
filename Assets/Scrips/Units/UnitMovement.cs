@@ -5,13 +5,14 @@ using UnityEngine;
 
 public class UnitMovement : MonoBehaviour
 {
-    public event Action<TileType, Vector2> UnitTileEffectChange;
+    public event Action<TileType, Vector3> UnitTileEffectChange;
     public event Func<Unit, Vector3, bool> UnitMovedTile;
     private TileType walkingElementalEffect;
     private Unit owner;
     private UnitAttack unitAttack;
     private bool? constantMovementDataNeeded;
     private int lastPosition = -1; // x position
+
     private void Update()
     {
         if (unitAttack.Target == null)
@@ -27,8 +28,8 @@ public class UnitMovement : MonoBehaviour
         {
             calculatedSpeed *= -1;
         }
-        transform.Translate(calculatedSpeed);
-        int xPos = (int)transform.position.x;
+        transform.parent.Translate(calculatedSpeed, Space.World);
+        int xPos = Mathf.FloorToInt(transform.position.x);
         if (xPos != lastPosition || constantMovementDataNeeded == true)
         {
             lastPosition = xPos;

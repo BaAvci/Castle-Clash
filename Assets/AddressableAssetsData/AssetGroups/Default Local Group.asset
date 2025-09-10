@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: fc05fad4f43b9ef418b9b4d2dd6a004e
   m_SerializeEntries:
+  - m_GUID: 1232ce70827e6e24da38efd826b07e43
+    m_Address: Assets/Scrips/CardEffects/Spells/ThunderStrike.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2da58228756728c44a4ffb5d306becfb
     m_Address: Assets/Scrips/CardEffects/Spells/Blackhole.asset
     m_ReadOnly: 0
@@ -22,6 +27,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4619cd6ef1ef63f43aabd2c640679af7
     m_Address: Assets/Scrips/CardEffects/Units/DrowRanger.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1efa025f15245a48b359b93df6d4df1
+    m_Address: Assets/Scrips/CardEffects/Units/DragonKnight.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f047b1e5e3006ef469edd39d4c3c324b
+    m_Address: Assets/VFX/UnitSpawnAnimation.vfx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

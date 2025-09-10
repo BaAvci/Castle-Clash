@@ -49,6 +49,10 @@ public abstract class VectorField : MonoBehaviour
             velocity += acceleration * Time.deltaTime;
             foreignObject.position += velocity * Time.deltaTime;
         }
+        else
+        {
+            velocity = Vector3.zero;
+        }
     }
 
     public abstract Vector3 VectorFieldAcceleration(Vector3 velocity);

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
 
-public class HolyPotion : PlayableCard
+public class HolyPotion : PlayableSpellCard
 {
     public HolyPotion(Actor owner) : base(owner)
     {

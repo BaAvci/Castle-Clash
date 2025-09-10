@@ -8,9 +8,12 @@ public class AntiGravity : VectorField
     {
         base.Awake();
         diameter = (vectorFieldSize.x + vectorFieldSize.z) / 2;
-        vfxAsset.SetFloat("Radius", diameter);
-        vfxAsset.SetFloat("MaxHeight", diameter);
-        vfxAsset.enabled = true;
+        if (vfxAsset != null)
+        {
+            vfxAsset.SetFloat("Radius", diameter);
+            vfxAsset.SetFloat("MaxHeight", diameter);
+            vfxAsset.enabled = true;
+        }
     }
 
     private Vector3 StraightVectorFieldOther(Vector3 velocity)

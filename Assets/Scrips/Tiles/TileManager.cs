@@ -3,10 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
 using UnityEngine.Rendering;
+using UnityEngine.VFX;
 
 public class TileManager : MonoBehaviour
 {
@@ -24,11 +26,8 @@ public class TileManager : MonoBehaviour
     private Tile[,] tileGrid;
     private Dictionary<TileType, GameObject[,]> tileObjectPooling;
     private bool spacePressed;
-    public readonly float TileSizeOffset = 0.5f;
     private WaitForSeconds wait;
     private Camera camera;
-
-    [SerializeField] private GameObject testUnit;
 
     void Awake()
     {
@@ -41,7 +40,6 @@ public class TileManager : MonoBehaviour
 
         camera = Camera.main;
         wait = new WaitForSeconds(simulationInterval);
-        testUnit.GetComponent<UnitMovement>().UnitTileEffectChange += SetTileToTypeByInteraction;
         StartCoroutine(Co_Simulation());
     }
 
@@ -58,10 +56,8 @@ public class TileManager : MonoBehaviour
 
     private void RegisterUnitMovement(Vector3 position, GameObject unit)
     {
-        if (unit.TryGetComponent(out UnitMovement unitMovement))
-        {
-            unitMovement.UnitTileEffectChange += SetTileToTypeByInteraction;
-        }
+        UnitMovement unitMovement = unit.GetComponentInChildren<UnitMovement>(true);
+        unitMovement.UnitTileEffectChange += SetTileToTypeByInteraction;
     }
 
     public void CreateGrid(Vector2Int gridSize)
@@ -84,7 +80,7 @@ public class TileManager : MonoBehaviour
 
     private void AddTile(TileType tileType, int x, int y)
     {
-        GameObject newTile = Instantiate(tileType.Prefab, new Vector3(x + TileSizeOffset, 0, y), Quaternion.identity, this.transform);
+        GameObject newTile = Instantiate(tileType.Prefab, new Vector3(x, 0, y), Quaternion.identity, this.transform);
         if (defaultTilePrefab != tileType.Prefab)
         {
             newTile.SetActive(false);
@@ -120,11 +116,11 @@ public class TileManager : MonoBehaviour
         Ray ray = camera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit, 20f))
         {
-            TileManager conttoller = hit.collider.gameObject.GetComponentInParent<TileManager>();
-            if (conttoller != null)
+            TileManager controller = hit.collider.gameObject.GetComponentInParent<TileManager>();
+            if (controller != null)
             {
-                Vector2Int pos = new(Mathf.RoundToInt(hit.point.x), Mathf.RoundToInt(hit.point.z));
-                conttoller.SetTileToTypeByInteraction(tileData.TileType, pos);
+                Vector3Int pos = new(Mathf.RoundToInt(hit.point.x),0, Mathf.RoundToInt(hit.point.z));
+                controller.SetTileToTypeByInteraction(tileData.TileType, pos);
             }
         }
     }
@@ -139,25 +135,55 @@ public class TileManager : MonoBehaviour
         return IsIndexValid(new Vector2Int(x, y));
     }
 
-    private void SetTileToTypeByInteraction(TileType tileType, Vector2 position)
+    private void SetTileToTypeByInteraction(TileType tileType, Vector3 position)
     {
-        Vector2Int tilePosition = new Vector2Int((int)position.x, (int)position.y);
+        Vector2Int tilePosition = new Vector2Int((int)position.x, (int)position.z);
         if (!IsIndexValid(tilePosition))
         {
             return;
         }
         Tile tile = tileGrid[tilePosition.x, tilePosition.y];
-        tileObjectPooling[tile.Current][tilePosition.x, tilePosition.y].SetActive(false);
-        tileObjectPooling[tileType][tilePosition.x, tilePosition.y].SetActive(true);
+        GameObject oldTile = tileObjectPooling[tile.Current][tilePosition.x, tilePosition.y];
+        GameObject newTile = tileObjectPooling[tileType][tilePosition.x, tilePosition.y];
+        oldTile.SetActive(false);
+        newTile.SetActive(true);
+        VFXLerp(oldTile, newTile);
         tile.ReplaceTile(tileGrid, tilePosition, tileType);
         tile.UpdateRemainingSpreadRange(this, ref tileGrid);
     }
 
-    private void SetTileToTypePassivly(Vector2Int tilePosition, TileType tileType)
+    // Tried to slowly change from one grass texture to another but failed misserable
+    private void VFXLerp(GameObject oldTile, GameObject newTile)
     {
-        tileObjectPooling[tileGrid[tilePosition.x, tilePosition.y].Current][tilePosition.x, tilePosition.y].SetActive(false);
+        if (newTile.TryGetComponent<VisualEffect>(out VisualEffect effect))
+        {
+            float time = 0f;
+            effect.SetVector4("MainColor", oldTile.GetComponentInChildren<MeshRenderer>().sharedMaterial.color);
+            effect.SetVector4("TargetColor", newTile.GetComponentInChildren<MeshRenderer>().sharedMaterial.color);
+            effect.SetFloat("Time", time);
+            StartCoroutine(Co_Lerp(effect));
+        }
+    }
+    private IEnumerator Co_Lerp(VisualEffect effect)
+    {
+        float time = 0f;
+        while (time < 5f)
+        {
+            effect.SetFloat("Time", time);
+            time += Time.deltaTime;
+        }
+        effect.SetFloat("Time", time);
+        yield return null;
+    }
+    private void SetTileToTypePassively(Vector2Int tilePosition, TileType tileType)
+    {
+        GameObject oldTile = tileObjectPooling[tileGrid[tilePosition.x, tilePosition.y].Current][tilePosition.x, tilePosition.y];
+        oldTile.SetActive(false);
         tileGrid[tilePosition.x, tilePosition.y].Current = tileType;
-        tileObjectPooling[tileType][tilePosition.x, tilePosition.y].SetActive(true);
+
+        GameObject newTile = tileObjectPooling[tileType][tilePosition.x, tilePosition.y];
+        newTile.SetActive(true);
+        VFXLerp(oldTile, newTile);
     }
     private void CalculateNextStates()
     {
@@ -210,7 +236,7 @@ public class TileManager : MonoBehaviour
                 cell = tileGrid[x, y];
                 if (cell.Next != null)
                 {
-                    SetTileToTypePassivly(new Vector2Int(x, y), cell.Next);
+                    SetTileToTypePassively(new Vector2Int(x, y), cell.Next);
                     cell.Current = cell.Next;
                 }
 

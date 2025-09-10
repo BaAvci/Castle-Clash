@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-public class DrowRanger : PlayableCard
+public class DrowRanger : PlayableUnitCard
 {
     public DrowRanger(Actor owner) : base(owner)
     {

@@ -58,6 +58,11 @@ public class BoardCreator : MonoBehaviour
         {
             mesh.sharedMesh = null;
         }
+        var meshCollider = gameObject.GetComponentInChildren<TerrainBase>().gameObject.GetComponent<MeshCollider>();
+        if (meshCollider != null)
+        {
+            meshCollider.sharedMesh = null;
+        }
     }
 
     private void InstanziateActors()
@@ -66,12 +71,13 @@ public class BoardCreator : MonoBehaviour
         Vector2Int gridMaxUnitPlayPos = new Vector2Int(sectorLenght, boardSize.y);
         Vector2Int gridMaxSpellPlayPos = new Vector2Int(spellCardsPlaySize, boardSize.y);
         unitManager = gameObject.GetComponent<UnitManager>();
-        player.GetComponent<Actor>().Instanziate(new Vector2Int(0, 0), gridMaxUnitPlayPos, gridMaxSpellPlayPos, tileManager,
-           unitManager, true);
-        foreach (GameObject npc in npcs)
-        {
-            npc.GetComponent<Actor>().Instanziate(new Vector2Int(boardSize.x, 0), gridMaxUnitPlayPos, gridMaxSpellPlayPos, tileManager, unitManager, false);
-        }
+        Actor playerActor = player.GetComponent<Actor>();
+        playerActor.Instanziate(new Vector2Int(0, 0), gridMaxUnitPlayPos, gridMaxSpellPlayPos, tileManager, unitManager, true);
+        int randNPC = UnityEngine.Random.Range(0, npcs.Count);
+        Actor npcActor = npcs[randNPC].GetComponent<Actor>();
+        npcActor.Instanziate(new Vector2Int(boardSize.x - 1, 0), gridMaxUnitPlayPos, gridMaxSpellPlayPos, tileManager, unitManager, false);
+        unitManager.Initialize(playerActor, npcActor);
+        npcs[randNPC].GetComponent<AICardAgent>().Initialize(npcActor, playerActor, unitManager);
     }
 
     private void CalculateCardPlayPositions(out int sectorLenght, out int spellCardsPlaySize)

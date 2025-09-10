@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 
 public class UnitMonoMule : MonoBehaviour
@@ -9,5 +10,10 @@ public class UnitMonoMule : MonoBehaviour
         {
             Instance = this;
         }
+    }
+
+    public static void DestroyGameObject(GameObject gameObject)
+    {
+        Destroy(gameObject);
     }
 }

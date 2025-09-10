@@ -24,12 +24,22 @@ MonoBehaviour:
   TileType: {fileID: 0}
   Range: 2
   ScriptableObjects:
-  - {fileID: 11400000, guid: 7508281617d5dda40909a2f704e424da, type: 2}
+  - {fileID: 11400000, guid: 9e3d99ffe4b883c4a9a58c24aa454c01, type: 2}
+  - {fileID: 11400000, guid: 635eca5822641bf44a22e9fb99c3d317, type: 2}
+  - {fileID: 11400000, guid: b54c0829f5b958a4ba65c123435cb8a5, type: 2}
   MainValues:
   - 5
+  - 5
+  - 5
   SecondValues:
+  - 5
+  - 0
   - 0
   MainUpgradeValues:
   - 0
+  - 0
+  - 0
   SecondUpgradeValues:
+  - 0
+  - 0
   - 0

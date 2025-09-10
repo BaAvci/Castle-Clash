@@ -15,7 +15,7 @@ MonoBehaviour:
   Name: Water
   TemperatureType: 2
   MatterState: 2
-  Prefab: {fileID: 4077219156497056328, guid: 41ee76963d4a3524a87c9349ae206e4f, type: 3}
+  Prefab: {fileID: 4077219156497056328, guid: 5761ac65ae6a96c4c983fa0ded3e0c36, type: 3}
   TemperatureValue: 5
   SpreadRange: 4
   Dryness: 20

@@ -29,7 +29,7 @@ MonoBehaviour:
   uiBounds:
     serializedVersion: 2
     x: -1182
-    y: 1177
+    y: 1178
     width: 2669
     height: 2410
 --- !u!114 &114350483966674976
@@ -8891,7 +8891,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEditor.VFX.Position, Unity.VisualEffectGraph.Editor,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"position":{"x":0.0,"y":-0.09000000357627869,"z":0.0}}'
+      m_SerializableObject: '{"position":{"x":0.0,"y":0.10000000149011612,"z":0.0}}'
     m_Space: 0
   m_Property:
     name: _Position
@@ -9123,7 +9123,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEditor.VFX.Position, Unity.VisualEffectGraph.Editor,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"position":{"x":0.0,"y":0.0,"z":0.0}}'
+      m_SerializableObject: '{"position":{"x":0.0,"y":0.10999999940395355,"z":0.0}}'
     m_Space: 0
   m_Property:
     name: _Position

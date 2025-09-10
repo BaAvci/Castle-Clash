@@ -18,9 +18,9 @@ MonoBehaviour:
   uiBounds:
     serializedVersion: 2
     x: 689
-    y: -582
-    width: 2022
-    height: 1974
+    y: -546
+    width: 985
+    height: 1946
 --- !u!114 &114350483966674976
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -55,6 +55,7 @@ MonoBehaviour:
   m_CustomAttributes:
   - {fileID: 8926484042661614941}
   - {fileID: 8926484042661614983}
+  - {fileID: 8926484042661617093}
   m_ParameterInfo:
   - name: MaxHeight
     path: MaxHeight
@@ -3275,3 +3276,19 @@ MonoBehaviour:
         PublicKeyToken=b77a5c561934e089
   m_Direction: 0
   m_LinkedSlots: []
+--- !u!114 &8926484042661617093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1fe1c3ae22b45dea22da94bb7969561, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Description: 
+  m_AttributeName: CustomAttribute
+  m_Type: 0
+  m_IsExpanded: 0
