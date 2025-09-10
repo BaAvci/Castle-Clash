@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class ExposingStrike : PlayableCard
+public class ExposingStrike : PlayableSpellCard
 {
     #region Animation Data
 

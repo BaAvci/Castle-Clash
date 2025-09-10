@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class UnitManager : MonoBehaviour
 {
+    public event Action<Unit, bool> UnitAmountOnBoardChanged;
     private Dictionary<Unit, Vector2Int> unitsOnBoard = new();
     private Actor player;
     private Actor enemy;
@@ -21,7 +22,12 @@ public class UnitManager : MonoBehaviour
             unitsOnBoard.Add(unit.Key, unit.Value);
         }
     }
-
+    public void Initialize(Actor player, Actor Enemy)
+    {
+        this.player = player;
+        this.enemy = Enemy;
+        unitsOnBoard.Clear();
+    }
     public List<Unit> GetAllUnitsInRange(Vector2 targetPosition, int range = 1)
     {
         List<Unit> unitsInRange = new();
@@ -57,25 +63,54 @@ public class UnitManager : MonoBehaviour
         playableCard.CardWithGameObjectSpawned -= InitializeUnit;
     }
 
+    public Dictionary<Actor, List<Unit>> GetAllUnitsForActors()
+    {
+        Dictionary<Actor, List<Unit>> units = new();
+        List<Unit> playerUnits = new List<Unit>();
+        List<Unit> enemyUnits = new List<Unit>();
+        foreach (Unit unit in unitsOnBoard.Keys)
+        {
+            if (unit.PlayerOwned)
+            {
+                playerUnits.Add(unit);
+            }
+            else
+            {
+                enemyUnits.Add(unit);
+            }
+        }
+        units.Add(player, playerUnits);
+        units.Add(enemy, enemyUnits);
+        return units;
+    }
+
     private void InitializeUnit(Vector3 position, GameObject spawnedUnit)
     {
-        Unit newUnit = spawnedUnit.GetComponent<Unit>();
+        Unit newUnit = spawnedUnit.transform.root.GetComponentInChildren<Unit>(true);
         Vector2Int fixedPos = new Vector2Int((int)position.x, (int)position.z);
-        newUnit.GetComponent<UnitMovement>().UnitMovedTile += UpdateUnitTargets;
+        newUnit.GetComponentInChildren<UnitMovement>().UnitMovedTile += UpdateUnitTargets;
         newUnit.IsDead += RemoveUnitFromDictionary;
         unitsOnBoard.Add(newUnit, fixedPos);
+        UnitAmountOnBoardChanged?.Invoke(newUnit, true);
         UpdateUnitTargets(newUnit, position);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="unit"></param>
+    /// <param name="pos"></param>
+    /// <returns>Returns true if the Unit has to send position updates more often</returns>
     private bool UpdateUnitTargets(Unit unit, Vector3 pos)
     {
         Unit closestTarget = null;
         float closestTargetPos = float.MaxValue;
         Vector2Int cleanedPosition = new Vector2Int((int)pos.x, (int)pos.z);
 
-        if (cleanedPosition.x != unitsOnBoard[unit].x)
+        bool unitReachedEnd = UpdateUnitPosition(unit, pos, cleanedPosition);
+        if (unitReachedEnd)
         {
-            unitsOnBoard[unit] = cleanedPosition;
+            return false;
         }
 
         foreach (var possibleTarget in unitsOnBoard.ToList())
@@ -84,7 +119,10 @@ public class UnitManager : MonoBehaviour
             {
                 continue;
             }
-
+            if ((unit.PlayerOwned && possibleTarget.Key.gameObject.transform.position.x <= unit.gameObject.transform.position.x) || (!unit.PlayerOwned && possibleTarget.Key.gameObject.transform.position.x >= unit.gameObject.transform.position.x))
+            {
+                continue;
+            }
             // Is Unit in range
             if (CalculateAttackRange(unit, possibleTarget.Key))
             {
@@ -96,7 +134,31 @@ public class UnitManager : MonoBehaviour
                 }
             }
         }
-        unit.GetComponent<UnitAttack>().SetTarget(closestTarget);
+        unit.GetComponentInChildren<UnitAttack>().SetTarget(closestTarget);
+        return false;
+    }
+
+    private bool UpdateUnitPosition(Unit unit, Vector3 pos, Vector2Int cleanedPosition)
+    {
+        if (cleanedPosition.x != unitsOnBoard[unit].x)
+        {
+            unitsOnBoard[unit] = cleanedPosition;
+        }
+
+        Actor target = unit.PlayerOwned ? enemy : player;
+        // has the unit reached the enemy end?
+        bool reachedEnde = unit.PlayerOwned
+            ? pos.x >= target.GridStartPos.x
+            : pos.x <= target.GridStartPos.x;
+
+        if (reachedEnde)
+        {
+            Actor damageTarget = unit.PlayerOwned ? enemy : player;
+            damageTarget.ReceiveDamage();
+            unit.gameObject.SetActive(false);
+            return true;
+        }
+
         return false;
     }
 
@@ -115,5 +177,6 @@ public class UnitManager : MonoBehaviour
         unitsOnBoard.Remove(unitToRemove);
         unitToRemove.IsDead -= RemoveUnitFromDictionary;
         unitToRemove.GetComponent<UnitMovement>().UnitMovedTile -= UpdateUnitTargets;
+        UnitAmountOnBoardChanged?.Invoke(unitToRemove, false);
     }
 }

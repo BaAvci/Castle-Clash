@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class FireBall : PlayableCard
+public class FireBall : PlayableSpellCard
 {
     [SerializeField]
     private TileData tileData;

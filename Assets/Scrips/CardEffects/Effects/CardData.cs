@@ -25,6 +25,7 @@ public class CardData
     public List<float> SecondValues = new List<float>();
     public List<float> MainUpgradeValues = new List<float>();
     public List<float> SecondUpgradeValues = new List<float>();
+    public Mesh SingleMesh;
     public CardData(SOCardData cardData)
     {
         ID = cardData.ID;

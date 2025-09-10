@@ -31,8 +31,8 @@ public class TerrainSimple : TerrainBase
         texture.SetPixels32(colors);
         texture.Apply();
 
-        _meshRenderer.sharedMaterial.SetTexture("_HeightMap", texture);
-        _meshRenderer.sharedMaterial.SetFloat("_Threshold", _bottomLayer.HeighThreshold);
+        meshRenderer.sharedMaterial.SetTexture("_HeightMap", texture);
+        meshRenderer.sharedMaterial.SetFloat("_Threshold", _bottomLayer.HeighThreshold);
     }
 
     private void OnValidate()

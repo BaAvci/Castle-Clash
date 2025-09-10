@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-using static UnityEngine.UI.GridLayoutGroup;
+
+[System.Serializable]
 public abstract class PlayableCard
 {
-    public event Action<TileType, Vector2> CardWithTileTypePlayed;
+    public event Action<TileType, Vector3> CardWithTileTypePlayed;
     public event Action<Vector3, GameObject> CardWithGameObjectSpawned;
     public CardState CardPileState;
     public CardData CardData;
+    public float EnergyCost;
     [Tooltip("All effects this card can apply to others")]
-    private List<IEffect> effects;
+    public List<IEffect> Effects { get; private set; }
     private int currentLvl;
     public bool JustCreated;
     protected bool isPlayerOwned;
@@ -25,7 +27,7 @@ public abstract class PlayableCard
         {
             isPlayerOwned = false;
         }
-        effects = new List<IEffect>();
+        Effects = new List<IEffect>();
         AddEffects();
     }
 
@@ -58,7 +60,7 @@ public abstract class PlayableCard
                 Debug.Log(CardData.Name);
                 Debug.LogError("Something wrong happend!");
             }
-            effects.Add(effect);
+            Effects.Add(effect);
         }
     }
 
@@ -71,16 +73,16 @@ public abstract class PlayableCard
             Debug.Log($"{CardData.Name} has been upgraded and is lvl: {currentLvl}");
         }
     }
-
+    public bool IsCardAUnit() => this is PlayableUnitCard;
     protected abstract Task InitializeCardDataAsync();
 
     protected virtual void CanUpgrade()
     {
-        for (int i = 0; i < effects.Count; i++)
+        for (int i = 0; i < Effects.Count; i++)
         {
             float upgradeMainValue = CardData.MainUpgradeValues[i];
             float upgradeSecondValue = CardData.SecondUpgradeValues[i];
-            effects[i].UpgradeValues(upgradeMainValue, upgradeSecondValue);
+            Effects[i].UpgradeValues(upgradeMainValue, upgradeSecondValue);
         }
     }
     public virtual void Draw(List<PlayableCard> playableCards)
@@ -108,7 +110,7 @@ public abstract class PlayableCard
     }
     protected void PlayGameObjectCard(List<Unit> targets, Vector3 position)
     {
-        if (effects.Count > 0)
+        if (Effects.Count > 0)
         {
             ApplyEffects(targets);
         }
@@ -119,12 +121,13 @@ public abstract class PlayableCard
         if (CardData.Gameobject != null)
         {
             GameObject spawnedObject = SpawnGameObject(CardData.Gameobject, position);
-            spawnedObject.GetComponent<Unit>().Initialize(isPlayerOwned, CardData.TileType);
+
+            spawnedObject.GetComponentInChildren<Unit>().Initialize(isPlayerOwned, CardData.TileType);
             CardWithGameObjectSpawned?.Invoke(position, spawnedObject);
         }
         if (CardData.TileType != null)
         {
-            CardWithTileTypePlayed?.Invoke(CardData.TileType, new Vector2(position.x, position.z));
+            CardWithTileTypePlayed?.Invoke(CardData.TileType, position);
         }
     }
     public void ResetCardState()
@@ -136,16 +139,23 @@ public abstract class PlayableCard
     {
         for (int i = 0; i < targets.Count; i++)
         {
-            for (int j = 0; j < effects.Count; j++)
+            for (int j = 0; j < Effects.Count; j++)
             {
-                effects[j].ApplyEffect(targets[i].UnitStats);
+                Effects[j].ApplyEffect(targets[i].UnitStats);
             }
         }
     }
 
     protected virtual GameObject SpawnGameObject(GameObject objectToSpawn, Vector3 position)
     {
-        return UnityEngine.MonoBehaviour.Instantiate(objectToSpawn, position, Quaternion.identity);
+        Quaternion rotation = Quaternion.identity;
+        if (IsCardAUnit())
+        {
+            int rotationValue = isPlayerOwned ? 90 : -90;
+            rotation = Quaternion.Euler(0, rotationValue, 0);
+        }
+
+        return UnityEngine.MonoBehaviour.Instantiate(objectToSpawn, position, rotation);
     }
 }
 

@@ -14,6 +14,7 @@ public class UnitStats
     public int AttackRange;
     public AttackType AttackType;
     public MainStat MainStat;
+    public float AttacksPerSecond;
     public float CurrentDamage { get; private set; }
     #region Strenght
     public float Strenght;                 // Dictates how high the base value the following stats are for a unit
@@ -109,7 +110,8 @@ public class UnitStats
         CritChance = agility * 0.3f;
         EvadeChance = agility * 0.1f;
         float baseAttackSpeed = 1;
-        AttackSpeed = baseAttackSpeed - (((int)(agility / 6)) * 0.1f);
+        AttackSpeed = baseAttackSpeed - (((int)(agility / 6)) * 0.1f); // TODO: calculte mid range of max agility and set that as 1/atks while max agi is 2/atks and min agi is 0.5/atks || spell modifiers can still chang it to 0.1/atks or 100/atks
+        AttacksPerSecond = 1 / AttackSpeed;
         Armor = agility * 0.5f;
 
         currentAgility = Agility;
@@ -145,7 +147,6 @@ public class UnitStats
                 Damage += agility;
                 CritChance += agility * 1.5f + baseChance;
                 EvadeChance += agility * 1.5f + baseChance;
-                AttackSpeed += baseResistance;
                 break;
             case MainStat.Intelligence:
                 Damage += intelligence;
@@ -340,7 +341,9 @@ public class UnitStats
         currentHealthPoints -= resultingDamage;
         if (currentHealthPoints <= 0)
         {
-            owner.gameObject.SetActive(false);
+            Animator animator = owner.transform.root.GetComponent<Animator>();
+            animator.SetTrigger("Death");
+            owner.enabled = false;
             return true;
         }
         return false;

@@ -10,8 +10,8 @@ public class PlayerCardHand : CardHand
     private Dictionary<GameObject, PlayableCard> handCards = new();
     [SerializeField] private GameObject buttonPrefab;
     [SerializeField] private GridLayoutGroup layoutGroup;
-
-    public override void SelectCard(int index)
+    private GameObject selectedCardObject;
+    public void SelectCard(int index)
     {
         selectedCard = index;
     }
@@ -35,7 +35,10 @@ public class PlayerCardHand : CardHand
     {
         if (Input.GetMouseButtonDown(0) && selectedCard > -1)
         {
-            PlayCard();
+            selectedCardObject = handCards.ElementAt(selectedCard).Key;
+            PlayableCard playableCard = handCards[selectedCardObject];
+            Vector3 position = GetTargetPositionOfPlayedCard();
+            PlayCard(playableCard, position);
         }
         if (Input.GetMouseButtonDown((int)Unity.VisualScripting.MouseButton.Right))
         {
@@ -44,7 +47,7 @@ public class PlayerCardHand : CardHand
         base.Update();
     }
 
-    protected override Vector3 GetTargetPositionOfPlayedCard()
+    private Vector3 GetTargetPositionOfPlayedCard()
     {
         Vector3 position = Vector3.zero;
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -55,8 +58,15 @@ public class PlayerCardHand : CardHand
         {
             position = hit.point;
         }
-        position.y = 0.2f;
+        position.y = 0.6f;
         return position;
+    }
+
+    protected override void RemoveCardFromSelection(PlayableCard playableCard)
+    {
+        handCards[selectedCardObject] = null;
+        selectedCardObject.SetActive(false);
+        selectedCardObject = null;
     }
 
     protected override void DrawCard()
@@ -100,41 +110,5 @@ public class PlayerCardHand : CardHand
                 transform.gameObject.GetComponent<TextMeshProUGUI>().SetText(card.CardData.Description);
             }
         }
-    }
-
-    public override void PlayCard()
-    {
-        GameObject card = handCards.ElementAt(selectedCard).Key;
-        PlayableCard playableCard = handCards[card];
-
-        Vector2Int startPos = owner.GridStartPos;
-        Vector2Int maxPos = owner.GridMaxSpellPlayPos;
-        bool isUnit = IsCardAUnit(playableCard);
-
-        Vector3 position = GetTargetPositionOfPlayedCard();
-        List<Unit> affectedUnits = new();
-
-        if (isUnit)
-        {
-            maxPos = owner.GridMaxUnitPlayPos;
-            position = new((int)position.x + owner.TileManager.TileSizeOffset, 1, (int)position.z);
-        }
-        else
-        {
-            affectedUnits = unitManager.GetAllUnitsInRange(position, playableCard.CardData.Range);
-        }
-
-        if (!IsPointWithinBounds(position, startPos, maxPos))
-        {
-            return;
-        }
-
-        playableCard.Play(affectedUnits, position, cards);
-
-        handCards[card] = null;
-        card.SetActive(false);
-
-        handSize--;
-        selectedCard = -1;
     }
 }

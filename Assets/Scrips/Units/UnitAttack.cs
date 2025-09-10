@@ -4,9 +4,10 @@ using UnityEngine;
 public class UnitAttack : MonoBehaviour
 {
     private Unit owner;
-    public UnitStats? Target { get; private set; }
-    [SerializeField] private Unit? unitTarget;
+    public UnitStats Target;
+    [SerializeField] private Unit unitTarget;
     private float attackTimer;
+    private Animator animator;
 
     private void Update()
     {
@@ -27,18 +28,25 @@ public class UnitAttack : MonoBehaviour
     public void Initialize(Unit owner)
     {
         this.owner = owner;
+        animator = gameObject.transform.root.GetComponent<Animator>();
     }
-    public void SetTarget(Unit? unit)
+    public void SetTarget(Unit unit)
     {
         if (unit == null)
         {
             unitTarget = null;
-            this.Target = null;
+            Target = null;
+            if (animator != null)
+            {
+                animator.SetBool("Attacking", false);
+            }
         }
         else
         {
             unitTarget = unit;
-            this.Target = unitTarget.UnitStats;
+            Target = unitTarget.UnitStats;
+            animator.SetBool("Attacking", true);
+            animator.SetFloat("AttackSpeed", owner.UnitStats.AttacksPerSecond);
         }
     }
 }

@@ -5,34 +5,31 @@ using UnityEngine;
 
 public class AICardHand : CardHand
 {
-    [SerializeField] private List<PlayableCard> handCards = new();
-    [SerializeField] private float playInterval = 2.5f;
-    private float playTimer;
-    public override void SelectCard(int index = 0)
-    {
-        selectedCard = UnityEngine.Random.Range(0, handSize);
-    }
+    public List<PlayableCard> HandCards { get => handCards; }
+
+    [SerializeField] private List<PlayableCard> handCards;
 
     protected override void Start()
     {
+        handCards = new();
         owner = gameObject.GetComponent<Actor>();
     }
-    protected override void Update()
+    public Vector3 GetTargetPositionOfPlayedCard(PlayableCard playableCard, Unit targetUnit)
     {
-        playTimer += Time.deltaTime;
-        if (playTimer >= playInterval && handSize > 0)
+        Vector3 position = new Vector3(0, 0.6f, 0);
+        if (targetUnit == null)
         {
-            playTimer = 0;
-            SelectCard();
-            PlayCard();
+            position = GenerateRandomPosition(playableCard.IsCardAUnit());
         }
-        base.Update();
-    }
-    protected override Vector3 GetTargetPositionOfPlayedCard()
-    {
-        Vector3 position = Vector3.zero;
-        PlayableCard card = handCards[selectedCard];
-        position = GenerateRandomPosition(IsCardAUnit(card));
+        else
+        {
+            position = targetUnit.transform.position;
+        }
+        if (playableCard.IsCardAUnit())
+        {
+            position.x = owner.GridStartPos.x;
+        }
+
         return position;
     }
     private Vector3 GenerateRandomPosition(bool isUnit)
@@ -42,8 +39,8 @@ public class AICardHand : CardHand
         {
             cardMaxPos = owner.GridMaxUnitPlayPos;
         }
-        float x = UnityEngine.Random.Range(MathF.Min(owner.GridStartPos.x, owner.GridMaxSpellPlayPos.x), MathF.Max(owner.GridStartPos.x, owner.GridMaxSpellPlayPos.x));
-        float y = UnityEngine.Random.Range(MathF.Min(owner.GridStartPos.y, owner.GridMaxSpellPlayPos.y), MathF.Max(owner.GridStartPos.y, owner.GridMaxSpellPlayPos.y));
+        float x = UnityEngine.Random.Range(MathF.Min(owner.GridStartPos.x, cardMaxPos.x), MathF.Max(owner.GridStartPos.x, cardMaxPos.x));
+        float y = UnityEngine.Random.Range(MathF.Min(owner.GridStartPos.y, cardMaxPos.y), MathF.Max(owner.GridStartPos.y, cardMaxPos.y));
         return new Vector3(x, 0.2f, y);
     }
 
@@ -69,37 +66,8 @@ public class AICardHand : CardHand
         }
     }
 
-    public override void PlayCard()
+    protected override void RemoveCardFromSelection(PlayableCard playableCard)
     {
-        PlayableCard playableCard = handCards[selectedCard];
-
-        Vector2Int startPos = owner.GridStartPos;
-        Vector2Int maxPos = owner.GridMaxSpellPlayPos;
-        bool isUnit = IsCardAUnit(playableCard);
-
-        Vector3 position = GetTargetPositionOfPlayedCard();
-        List<Unit> affectedUnits = new();
-
-        if (isUnit)
-        {
-            maxPos = owner.GridMaxUnitPlayPos;
-            position = new((int)position.x + owner.TileManager.TileSizeOffset, 1, (int)position.z);
-        }
-        else
-        {
-            affectedUnits = unitManager.GetAllUnitsInRange(position, playableCard.CardData.Range);
-        }
-
-        if (!IsPointWithinBounds(position, startPos, maxPos))
-        {
-            return;
-        }
-
-        playableCard.Play(affectedUnits, position, cards);
-
-        handCards.RemoveAt(selectedCard);
-
-        handSize--;
-        selectedCard = -1;
+        handCards.Remove(playableCard);
     }
 }

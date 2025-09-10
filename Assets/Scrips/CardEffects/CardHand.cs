@@ -12,20 +12,17 @@ using static UnityEngine.UI.CanvasScaler;
 public abstract class CardHand : MonoBehaviour
 {
     protected int maxHandSize = 10;
-    protected int handSize;
+    [SerializeField] protected int handSize;
 
     protected List<PlayableCard> cards = new();
     protected List<Button> cardButtons = new();
 
     [SerializeField] protected float drawInterval = 2;
-    [SerializeField] protected GameObject testTarget;
     protected float drawTimer;
     protected int selectedCard;
     protected Actor owner;
     protected float gridOffSet = 0.5f;
     protected UnitManager unitManager;
-
-    public abstract void SelectCard(int index);
 
     public void Initialize(Deck actorDeck, UnitManager unitManager)
     {
@@ -43,21 +40,38 @@ public abstract class CardHand : MonoBehaviour
     {
         DrawCard();
     }
-    protected abstract Vector3 GetTargetPositionOfPlayedCard();
-    public abstract void PlayCard();
-
-    protected abstract void DrawCard();
-    protected bool IsCardAUnit(PlayableCard playableCard)
+    public void PlayCard(PlayableCard playableCard, Vector3 position)
     {
-        bool isUnit = false;
+        Vector2Int startPos = owner.GridStartPos;
+        Vector2Int maxPos = owner.GridMaxSpellPlayPos;
+        bool isUnit = playableCard.IsCardAUnit();
 
-        if (playableCard.CardData.Gameobject != null && playableCard.CardData.Gameobject.TryGetComponent<Unit>(out Unit _))
+        List<Unit> affectedUnits = new();
+
+        if (isUnit)
         {
-            isUnit = true;
+            maxPos = owner.GridMaxUnitPlayPos;
+            int roundedValue = Mathf.RoundToInt(position.x);
+            position = new(roundedValue, 0, (int)position.z);
+        }
+        else
+        {
+            affectedUnits = unitManager.GetAllUnitsInRange(position, playableCard.CardData.Range);
         }
 
-        return isUnit;
+        if (!IsPointWithinBounds(position, startPos, maxPos))
+        {
+            return;
+        }
+
+        playableCard.Play(affectedUnits, position, cards);
+
+        handSize--;
+        selectedCard = -1;
+        RemoveCardFromSelection(playableCard);
     }
+
+    protected abstract void DrawCard();
 
     protected void ShuffleCards()
     {
@@ -75,7 +89,7 @@ public abstract class CardHand : MonoBehaviour
             discardPile[i].Shuffle(cards);
         }
     }
-
+    protected abstract void RemoveCardFromSelection(PlayableCard playableCard);
     protected bool IsPointWithinBounds(Vector3 point, Vector2Int min, Vector2Int max)
     {
         Vector2Int lower = Vector2Int.Min(min, max);

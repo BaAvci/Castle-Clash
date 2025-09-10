@@ -4,17 +4,22 @@ using UnityEngine;
 public class UnitBaseStat : ScriptableObject
 {
     [Range(10, 40)]
-    public float Strenght;
+    public int Strength;
     [Range(10, 40)]
-    public float Agility;
+    public int Agility;
     [Range(10, 40)]
-    public float Intelligence;
+    public int Intelligence;
     public MainStat MainStat;
     public AttackType AttackType;
     [Range(1, 4)]
     public int AttackRange;
 
     public UnitStats UnitStats;
+
+    /// <summary>
+    /// Duration of spawn animation in seconds
+    /// </summary>
+    public float UnitSpawnAnimationDuration = 4;
 
     private void OnValidate()
     {
@@ -26,6 +31,6 @@ public class UnitBaseStat : ScriptableObject
         {
             AttackRange = 1;
         }
-        UnitStats = new(Strenght, Agility, Intelligence, MainStat, AttackType, AttackRange);
+        UnitStats = new(Strength, Agility, Intelligence, MainStat, AttackType, AttackRange);
     }
 }

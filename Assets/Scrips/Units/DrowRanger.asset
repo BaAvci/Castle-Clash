@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84c1032fb28d3054c96c6c47a1dea5d2, type: 3}
+  m_Name: DrowRanger
+  m_EditorClassIdentifier: 
+  Strength: 17
+  Agility: 30
+  Intelligence: 16
+  MainStat: 1
+  AttackType: 0
+  AttackRange: 4
+  UnitStats:
+    Damage: 40
+    AttackRange: 4
+    AttackType: 0
+    MainStat: 1
+    Strenght: 17
+    MaxHealthPoints: 494
+    HealthPointRegen: 18.3
+    CrowdControlResistance: 0.85
+    HealingAmplification: 0.85
+    PhysicalResistance: 18.5
+    currentHealthPoints: 494
+    Agility: 30
+    Speed: 2.5
+    CritChance: 64
+    EvadeChance: 58
+    AttackSpeed: 10.5
+    Armor: 15
+    Intelligence: 16
+    MaxMana: 472
+    ManaRegen: 22.2
+    SpellAmplification: 3.2
+    StatusResistance: 8
+    MagicalResistance: 18

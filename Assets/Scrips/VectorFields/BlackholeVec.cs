@@ -11,14 +11,6 @@ public class BlackholeVec : VectorField
         spiral = new Spiral();
     }
 
-    public void CreateBlackhole(float size, float duration)
-    {
-        vfxAsset.SetFloat("blackHoleSize", size);
-        vfxAsset.enabled = true;
-        WaitForSeconds wait = new WaitForSeconds(duration);
-        StartCoroutine(Co_DisplayBlackhole(wait));
-    }
-
     private Vector3 BlackHole(Vector3 velocity)
     {
         // Fa(x,y) = <-x , -y> inward pull        
@@ -47,10 +39,5 @@ public class BlackholeVec : VectorField
     public override Vector3 VectorFieldAcceleration(Vector3 velocity)
     {
         return BlackHole(velocity);
-    }
-    private IEnumerator Co_DisplayBlackhole(WaitForSeconds wait)
-    {
-        yield return wait;
-        Destroy(gameObject);
     }
 }

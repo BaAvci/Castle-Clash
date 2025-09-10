@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b313707ff9dd1934f9d63a95af4a988a, type: 3}
+  m_Name: ThunderStrike
+  m_EditorClassIdentifier: 
+  ID: 0
+  Name: Thunder Strike
+  Description: 
+  Image: {fileID: 0}
+  Rarity: 4
+  MaxLVL: 25
+  Animation: {fileID: 5776880675487442246, guid: ce847243ce3ec2f4687c1da37aad7155, type: 3}
+  Gameobject: {fileID: 0}
+  TileType: {fileID: 11400000, guid: d0379c78da9f33049a1ef8f2fbdb2c09, type: 2}
+  Range: 2
+  ScriptableObjects:
+  - {fileID: 11400000, guid: 7508281617d5dda40909a2f704e424da, type: 2}
+  MainValues:
+  - 300
+  SecondValues:
+  - 0
+  MainUpgradeValues:
+  - 100
+  SecondUpgradeValues:
+  - 0

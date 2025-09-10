@@ -6,13 +6,30 @@ using UnityEngine;
 [RequireComponent(typeof(CardHand))]
 public class Actor : MonoBehaviour
 {
-    private Deck deck;
-    public CardHand Hand;
     public Vector2Int GridStartPos { get; private set; }
     public Vector2Int GridMaxUnitPlayPos { get; private set; }
     public Vector2Int GridMaxSpellPlayPos { get; private set; }
     public TileManager TileManager { get; private set; }
+    private Deck deck;
+    private CardHand hand;
     private UnitManager unitManager;
+
+    // Move this section to another class
+    [SerializeField] private float exposedHP;
+    public float HealthPoints = 30; // TODO: Move to a seperate class after AI implementation.
+    public event Action<Actor, float> HealthChanged;
+    public bool IsPlayer;
+
+    public void ReceiveDamage()
+    {
+        HealthPoints--;
+        exposedHP = HealthPoints;
+        HealthChanged?.Invoke(this, HealthPoints);
+        if (HealthPoints <= 0)
+        {
+            Debug.Log($"{gameObject.name} is dead!");
+        }
+    }
 
     // Update is called once per frame
     void Update()
@@ -26,9 +43,10 @@ public class Actor : MonoBehaviour
         }
     }
 
-    public void Instanziate(Vector2Int gridStartPos, Vector2Int gridMaxUnitPlayPos, Vector2Int gridMaxSpellPlayPos, TileManager tileManager,UnitManager unitManager, bool isPlayer)
+    public void Instanziate(Vector2Int gridStartPos, Vector2Int gridMaxUnitPlayPos, Vector2Int gridMaxSpellPlayPos, TileManager tileManager, UnitManager unitManager, bool isPlayer)
     {
         GridStartPos = gridStartPos;
+        IsPlayer = isPlayer;
         if (gameObject.CompareTag("Enemy"))
         {
             gridMaxUnitPlayPos.x = gridStartPos.x - gridMaxUnitPlayPos.x;
@@ -39,6 +57,14 @@ public class Actor : MonoBehaviour
         TileManager = tileManager;
         this.unitManager = unitManager;
         CreateStartDeck(isPlayer);
+    }
+    private void OnValidate()
+    {
+        if (exposedHP != HealthPoints)
+        {
+            HealthPoints = exposedHP;
+            HealthChanged?.Invoke(this, HealthPoints);
+        }
     }
     private void CreateStartDeck(bool isPlayer)
     {
@@ -55,8 +81,8 @@ public class Actor : MonoBehaviour
         }
         deck.AddCards(playableCards, TileManager, unitManager);
 
-        Hand = GetComponent<CardHand>();
-        Hand.Initialize(deck,unitManager);
+        hand = GetComponent<CardHand>();
+        hand.Initialize(deck, unitManager);
     }
     #region Remove this to a seperate class / function or what ever
     private static class PlayerStartingDecks
@@ -69,10 +95,10 @@ public class Actor : MonoBehaviour
                 case 1:
                     playableCards.Add(new DrowRanger(actor));
                     playableCards.Add(new DrowRanger(actor));
-                    playableCards.Add(new Blackhole(actor));
-                    playableCards.Add(new Blackhole(actor));
-                    playableCards.Add(new Blackhole(actor));
-                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new DragonKnight(actor));
+                    playableCards.Add(new DragonKnight(actor));
+                    playableCards.Add(new ThunderStrike(actor));
+                    playableCards.Add(new ThunderStrike(actor));
                     playableCards.Add(new Blackhole(actor));
                     playableCards.Add(new Blackhole(actor));
                     playableCards.Add(new Blackhole(actor));
@@ -121,8 +147,8 @@ public class Actor : MonoBehaviour
                     playableCards.Add(new Blackhole(actor));
                     playableCards.Add(new DrowRanger(actor));
                     playableCards.Add(new DrowRanger(actor));
-                    playableCards.Add(new Blackhole(actor));
-                    playableCards.Add(new Blackhole(actor));
+                    playableCards.Add(new DragonKnight(actor));
+                    playableCards.Add(new DragonKnight(actor));
                     playableCards.Add(new Blackhole(actor));
                     playableCards.Add(new Blackhole(actor));
                     playableCards.Add(new Blackhole(actor));
